@@ -4,8 +4,8 @@ Donate link: https://wpclever.net
 Tags: woocommerce, wpc, upsells, related, bought together
 Requires at least: 4.0
 Tested up to: 6.6
-Version: 7.2.1
-Stable tag: 7.2.1
+Version: 7.3.0
+Stable tag: 7.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -74,6 +74,9 @@ Please try other plugins from us:
 4. When adding/editing the product you can choose "Bought Together" tab then add some products with the new price
 
 == Changelog ==
+
+= 7.3.0 =
+* Updated: Optimized the code
 
 = 7.2.1 =
 * Updated: Compatible with WP 6.6 & Woo 9.3

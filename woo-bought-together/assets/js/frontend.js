@@ -604,27 +604,29 @@
         data.variation = attrs;
         data.nonce = woobt_vars.nonce;
 
-        $.post(woobt_vars.ajax_url, data, function(response) {
-          if (!response) {
-            return;
-          }
+        $.post(woobt_vars.wc_ajax_url.toString().
+                replace('%%endpoint%%', 'woobt_add_all_to_cart'), data,
+            function(response) {
+              if (!response) {
+                return;
+              }
 
-          if (response.error && response.product_url) {
-            window.location = response.product_url;
-            return;
-          }
+              if (response.error && response.product_url) {
+                window.location = response.product_url;
+                return;
+              }
 
-          if ((typeof wc_add_to_cart_params !== 'undefined') &&
-              (wc_add_to_cart_params.cart_redirect_after_add === 'yes')) {
-            window.location = wc_add_to_cart_params.cart_url;
-            return;
-          }
+              if ((typeof wc_add_to_cart_params !== 'undefined') &&
+                  (wc_add_to_cart_params.cart_redirect_after_add === 'yes')) {
+                window.location = wc_add_to_cart_params.cart_url;
+                return;
+              }
 
-          $btn.removeClass('loading');
-          $(document.body).
-              trigger('added_to_cart',
-                  [response.fragments, response.cart_hash, $btn]);
-        });
+              $btn.removeClass('loading');
+              $(document.body).
+                  trigger('added_to_cart',
+                      [response.fragments, response.cart_hash, $btn]);
+            });
       });
 })(jQuery);
 

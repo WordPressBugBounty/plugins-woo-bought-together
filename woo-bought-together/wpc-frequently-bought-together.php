@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.2.1
+Version: 7.3.0
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -17,7 +17,7 @@ WC tested up to: 9.3
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.2.1' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.3.0' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -139,8 +139,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					], 10, 2 );
 
 					// Add all to cart
-					add_action( 'wp_ajax_woobt_add_all_to_cart', [ $this, 'ajax_add_all_to_cart' ] );
-					add_action( 'wp_ajax_nopriv_woobt_add_all_to_cart', [ $this, 'ajax_add_all_to_cart' ] );
+					add_action( 'wc_ajax_woobt_add_all_to_cart', [ $this, 'ajax_add_all_to_cart' ] );
 
 					// Cart contents
 					add_action( 'woocommerce_before_mini_cart_contents', [ $this, 'before_mini_cart_contents' ], 9999 );
@@ -455,6 +454,9 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                                         <option value="grid-2" <?php selected( $layout, 'grid-2' ); ?>><?php esc_html_e( 'Grid - 2 columns', 'woo-bought-together' ); ?></option>
                                                         <option value="grid-3" <?php selected( $layout, 'grid-3' ); ?>><?php esc_html_e( 'Grid - 3 columns', 'woo-bought-together' ); ?></option>
                                                         <option value="grid-4" <?php selected( $layout, 'grid-4' ); ?>><?php esc_html_e( 'Grid - 4 columns', 'woo-bought-together' ); ?></option>
+                                                        <option value="carousel-2" <?php selected( $layout, 'carousel-2' ); ?> disabled><?php esc_html_e( 'Carousel - 2 columns (Premium)', 'woo-bought-together' ); ?></option>
+                                                        <option value="carousel-3" <?php selected( $layout, 'carousel-3' ); ?> disabled><?php esc_html_e( 'Carousel - 3 columns (Premium)', 'woo-bought-together' ); ?></option>
+                                                        <option value="carousel-4" <?php selected( $layout, 'carousel-4' ); ?> disabled><?php esc_html_e( 'Carousel - 4 columns (Premium)', 'woo-bought-together' ); ?></option>
                                                     </select> </label>
                                             </td>
                                         </tr>
@@ -868,6 +870,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                         <li>- Add a variable product or a specific variation of a product.</li>
                                         <li>- Use Smart Rules to configure multiple bought-together products at once.</li>
                                         <li>- Insert heading/paragraph into products list.</li>
+                                        <li>- Use the carousel layout.</li>
                                         <li>- Get the lifetime update & premium support.</li>
                                     </ul>
                                 </div>
@@ -1346,7 +1349,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					wp_enqueue_style( 'woobt-frontend', WOOBT_URI . 'assets/css/frontend.css', [], WOOBT_VERSION );
 					wp_enqueue_script( 'woobt-frontend', WOOBT_URI . 'assets/js/frontend.js', [ 'jquery' ], WOOBT_VERSION, true );
 					wp_localize_script( 'woobt-frontend', 'woobt_vars', apply_filters( 'woobt_vars', [
-							'ajax_url'                 => admin_url( 'admin-ajax.php' ),
+							'wc_ajax_url'              => WC_AJAX::get_endpoint( '%%endpoint%%' ),
 							'nonce'                    => wp_create_nonce( 'woobt-security' ),
 							'change_image'             => self::get_setting( 'change_image', 'yes' ),
 							'change_price'             => self::get_setting( 'change_price', 'yes' ),
@@ -1364,6 +1367,29 @@ if ( ! function_exists( 'woobt_init' ) ) {
 							'total_price_text'         => self::localization( 'total', esc_html__( 'Total:', 'woo-bought-together' ) ),
 							'add_to_cart'              => self::get_setting( 'atc_button', 'main' ) === 'main' ? self::localization( 'add_to_cart', esc_html__( 'Add to cart', 'woo-bought-together' ) ) : self::localization( 'add_all_to_cart', esc_html__( 'Add all to cart', 'woo-bought-together' ) ),
 							'alert_selection'          => self::localization( 'alert_selection', esc_html__( 'Please select a purchasable variation for [name] before adding this product to the cart.', 'woo-bought-together' ) ),
+							'carousel_params'          => apply_filters( 'woobt_carousel_params', json_encode( apply_filters( 'woobt_carousel_params_arr', [
+								'dots'           => true,
+								'arrows'         => true,
+								'infinite'       => false,
+								'adaptiveHeight' => true,
+								'rtl'            => is_rtl(),
+								'responsive'     => [
+									[
+										'breakpoint' => 768,
+										'settings'   => [
+											'slidesToShow'   => 2,
+											'slidesToScroll' => 2
+										]
+									],
+									[
+										'breakpoint' => 480,
+										'settings'   => [
+											'slidesToShow'   => 1,
+											'slidesToScroll' => 1
+										]
+									]
+								]
+							] ) ) ),
 						] )
 					);
 				}
@@ -2335,6 +2361,9 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                             <option value="grid-2" <?php selected( $layout, 'grid-2' ); ?>><?php esc_html_e( 'Grid - 2 columns', 'woo-bought-together' ); ?></option>
                                             <option value="grid-3" <?php selected( $layout, 'grid-3' ); ?>><?php esc_html_e( 'Grid - 3 columns', 'woo-bought-together' ); ?></option>
                                             <option value="grid-4" <?php selected( $layout, 'grid-4' ); ?>><?php esc_html_e( 'Grid - 4 columns', 'woo-bought-together' ); ?></option>
+                                            <option value="carousel-2" <?php selected( $layout, 'carousel-2' ); ?> disabled><?php esc_html_e( 'Carousel - 2 columns (Premium)', 'woo-bought-together' ); ?></option>
+                                            <option value="carousel-3" <?php selected( $layout, 'carousel-3' ); ?> disabled><?php esc_html_e( 'Carousel - 3 columns (Premium)', 'woo-bought-together' ); ?></option>
+                                            <option value="carousel-4" <?php selected( $layout, 'carousel-4' ); ?> disabled><?php esc_html_e( 'Carousel - 4 columns (Premium)', 'woo-bought-together' ); ?></option>
                                         </select> </label>
                                 </td>
                             </tr>
@@ -2503,7 +2532,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 						$ids = $ids_arr['woobt_ids'];
 					}
 
-					echo '<textarea class="woobt_import_export_data" style="width: 100%; height: 200px">' . ( ! empty( $ids ) ? json_encode( $ids ) : '' ) . '</textarea>';
+					echo '<textarea class="woobt_import_export_data" style="width: 100%; height: 200px">' . esc_textarea( ( ! empty( $ids ) ? wp_json_encode( $ids ) : '' ) ) . '</textarea>';
 					echo '<div style="display: flex; align-items: center"><button class="button button-primary woobt-import-export-save">' . esc_html__( 'Update', 'woo-product-timer' ) . '</button>';
 					echo '<span style="color: #ff4f3b; font-size: 10px; margin-left: 10px">' . esc_html__( '* All current selected products will be replaced after pressing Update!', 'woo-product-timer' ) . '</span>';
 					echo '</div>';

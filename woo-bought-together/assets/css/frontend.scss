@@ -498,6 +498,186 @@
   }
 }
 
+/* Carousel */
+
+.woobt-products[class*="woobt-products-layout-carousel"] {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -10px;
+  margin-right: -10px;
+  border: none;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-item-text {
+  width: 100%;
+  margin: 10px;
+  padding: 10px 0;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product {
+  width: calc(33% - 20px);
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #dddddd;
+  font-size: 14px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product:hover {
+  border-color: green;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product .woobt-title-inner {
+  font-weight: 700;
+}
+
+.woobt-products.woobt-products-layout-carousel-1 .woobt-product {
+  width: calc(100% - 20px);
+}
+
+.woobt-products.woobt-products-layout-carousel-3 .woobt-product {
+  width: calc(100% / 3 - 20px);
+}
+
+.woobt-products.woobt-products-layout-carousel-4 .woobt-product {
+  width: calc(25% - 20px);
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product > div {
+  width: 100% !important;
+  flex: 0 0 auto !important;
+  text-align: center;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  margin-bottom: 5px;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product > div:last-child {
+  margin-bottom: 0;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product .woobt-quantity-input {
+  justify-content: center;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product select {
+  text-align: center;
+}
+
+.woobt-products[class*="woobt-products-layout-carousel"] .woobt-product .variations_form .variations .reset {
+  display: none;
+}
+
+.woobt-wrap[class*="woobt-layout-carousel"] {
+  display: none !important;
+}
+
+.woobt-wrap.woobt-carousel-initialized {
+  display: block !important;
+  position: relative;
+}
+
+.woobt-carousel-initialized .slick-dots {
+  display: block;
+  width: 100%;
+  list-style: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.woobt-carousel-initialized .slick-dots li {
+  display: inline-block;
+  margin: 0 5px;
+  font-size: 0;
+}
+
+.woobt-carousel-initialized .slick-dots li button {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  padding: 0;
+  font-size: 0;
+  line-height: 0;
+  border: none;
+  background-color: rgba(0, 0, 0, .3);
+  outline: none;
+  overflow: hidden;
+}
+
+.woobt-carousel-initialized .slick-dots li.slick-active button {
+  background-color: rgba(0, 0, 0, 1);
+}
+
+.woobt-carousel-initialized .slick-arrow {
+  width: 44px;
+  height: 44px;
+  line-height: 42px;
+  text-align: center;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0;
+  color: #222;
+  background-color: #fff;
+  border-radius: 0;
+  border: 1px solid #ddd;
+  z-index: 8;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.woobt-carousel-initialized:hover .slick-arrow {
+  opacity: 1;
+  visibility: visible;
+}
+
+.woobt-carousel-initialized .slick-arrow:hover {
+  color: #fff;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.woobt-carousel-initialized .slick-arrow:before {
+  font-size: 24px;
+  line-height: 44px;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  speak: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.woobt-carousel-initialized .slick-arrow:focus {
+  outline: none;
+}
+
+.woobt-carousel-initialized .slick-arrow.slick-prev {
+  left: 10px;
+}
+
+.woobt-carousel-initialized .slick-arrow.slick-prev:before {
+  content: '‹';
+}
+
+.woobt-carousel-initialized .slick-arrow.slick-next {
+  right: 10px;
+}
+
+.woobt-carousel-initialized .slick-arrow.slick-next:before {
+  content: '›';
+}
+
 /* Compact */
 
 .woobt-wrap.woobt-layout-compact {
