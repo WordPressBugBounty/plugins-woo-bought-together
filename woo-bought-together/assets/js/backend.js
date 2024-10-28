@@ -532,7 +532,11 @@
       var $combination = $this.closest('.woobt_combination');
       var val = $this.val();
 
-      if (val === 'same') {
+      if (val === 'variation' || val === 'not_variation') {
+        $combination.find('.woobt_combination_compare_wrap').hide();
+        $combination.find('.woobt_combination_val_wrap').hide();
+        $combination.find('.woobt_combination_same_wrap').hide();
+      } else if (val === 'same') {
         $combination.find('.woobt_combination_compare_wrap').hide();
         $combination.find('.woobt_combination_val_wrap').hide();
         $combination.find('.woobt_combination_same_wrap').show();

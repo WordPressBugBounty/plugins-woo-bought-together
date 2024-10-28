@@ -1,8 +1,53 @@
 @charset "UTF-8";
+@keyframes woobt-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes woobt-spinner {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
 .woobt-wrap {
   display: block;
   clear: both;
   width: 100%;
+}
+.woobt-wrap.woobt-loading {
+  position: relative;
+}
+.woobt-wrap.woobt-loading:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9;
+}
+.woobt-wrap.woobt-loading:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin-top: -15px;
+  margin-left: -15px;
+  border-width: 4px;
+  border-style: solid;
+  border-radius: 100%;
+  border-top-color: rgba(0, 0, 0, 0.5);
+  border-left-color: rgba(0, 0, 0, 0.1);
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+  border-right-color: rgba(0, 0, 0, 0.1);
+  animation: woobt-spinner 1s linear infinite;
+  -webkit-animation: woobt-spinner 1s linear infinite;
 }
 
 .woobt-wrap.woobt-layout-separate .woobt-product > .woobt-thumb, .woobt-wrap.woobt-layout-separate .woobt-product > .woobt-price {

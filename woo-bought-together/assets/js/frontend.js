@@ -285,6 +285,8 @@
           $img.html($img.attr('data-img'));
         }
       }
+
+      woobt_init($wrap);
     } else {
       if ($(e['target']).closest('.woosb-product').length ||
           $(e['target']).closest('.woosg-product').length ||
@@ -293,54 +295,97 @@
       }
 
       $wrap = $('.woobt-wrap-' + pid);
-      atc_button = $wrap.attr('data-atc-button');
-      $wrap.data('variation', t);
 
-      if (atc_button === 'main' || atc_button === 'both') {
-        $products = $('.woobt-products-' + pid);
-        $products.attr('data-product-sku', t['sku']);
-        $products.attr('data-product-id', t['variation_id']);
-        $products.attr('data-product-weight', t['weight_html']);
-        $products.attr('data-product-dimensions', t['dimensions_html']);
+      if ($wrap.length) {
+        var $ids = $('.woobt-ids-' + pid);
+        var $main_btn = $ids.closest('form.cart').
+            find('.single_add_to_cart_button:not(.wpcbn-btn)');
+        var $separate_btn = $ids.closest('.woobt-form').
+            find('.single_add_to_cart_button:not(.wpcbn-btn)');
 
-        if (t['price_html'] !== '') {
-          $products.attr('data-product-price-html', t['price_html']);
+        atc_button = $wrap.attr('data-atc-button');
+        $wrap.data('variation', t);
+
+        // reset ids
+        $ids.val('');
+        $main_btn.find('.woobt-count').remove();
+        $separate_btn.find('.woobt-count').remove();
+        $wrap.addClass('woobt-loading');
+
+        // has placeholder for variable product
+        if ($wrap.data('variable') === undefined) {
+          $wrap.data('variable', $wrap.html());
         }
 
-        if ($products.find('.woobt-product-this').length) {
-          $products.find('.woobt-product-this').
-              attr('data-id', t['variation_id']);
-          $products.find('.woobt-product-this').
-              attr('data-price', display_price);
-          $products.find('.woobt-product-this').
-              attr('data-regular-price', display_regular_price);
+        var data = {
+          action: 'woobt_get_variation_items',
+          variation_id: t['variation_id'],
+          nonce: woobt_vars.nonce,
+        };
 
-          if (price_html !== '') {
-            // change this price
-            $products.find('.woobt-product-this .woobt-price-ori').hide();
-            $products.find('.woobt-product-this .woobt-price-new').
-                html(price_html).show();
-          }
+        $.post(woobt_vars.wc_ajax_url.toString().
+                replace('%%endpoint%%', 'woobt_get_variation_items'), data,
+            function(response) {
+              if (response !== '') {
+                $wrap.html(response);
+              } else {
+                $wrap.html($wrap.data('variable'));
+              }
 
-          // change this image
-          if (t['woobt_image'] !== undefined && t['woobt_image'] !== '') {
-            var $img_0 = $wrap.find('.woobt-img-order-0');
+              $wrap.find('.woobt_variations_form').each(function() {
+                $(this).wc_variation_form();
+              });
 
-            if ($img_0.length) {
-              $img_0.html(t['woobt_image']);
-            }
-          } else {
-            var $img_0 = $wrap.find('.woobt-img-order-0');
+              if (atc_button === 'main' || atc_button === 'both') {
+                $products = $('.woobt-products-' + pid);
+                $products.attr('data-product-sku', t['sku']);
+                $products.attr('data-product-id', t['variation_id']);
+                $products.attr('data-product-weight', t['weight_html']);
+                $products.attr('data-product-dimensions', t['dimensions_html']);
 
-            if ($img_0.length) {
-              $img_0.html($img_0.attr('data-img'));
-            }
-          }
-        }
+                if (t['price_html'] !== '') {
+                  $products.attr('data-product-price-html', t['price_html']);
+                }
+
+                if ($products.find('.woobt-product-this').length) {
+                  $products.find('.woobt-product-this').
+                      attr('data-id', t['variation_id']);
+                  $products.find('.woobt-product-this').
+                      attr('data-price', display_price);
+                  $products.find('.woobt-product-this').
+                      attr('data-regular-price', display_regular_price);
+
+                  if (price_html !== '') {
+                    // change this price
+                    $products.find('.woobt-product-this .woobt-price-ori').
+                        hide();
+                    $products.find('.woobt-product-this .woobt-price-new').
+                        html(price_html).show();
+                  }
+
+                  // change this image
+                  if (t['woobt_image'] !== undefined && t['woobt_image'] !==
+                      '') {
+                    var $img_0 = $wrap.find('.woobt-img-order-0');
+
+                    if ($img_0.length) {
+                      $img_0.html(t['woobt_image']);
+                    }
+                  } else {
+                    var $img_0 = $wrap.find('.woobt-img-order-0');
+
+                    if ($img_0.length) {
+                      $img_0.html($img_0.attr('data-img'));
+                    }
+                  }
+                }
+              }
+
+              woobt_init($wrap);
+              $wrap.removeClass('woobt-loading');
+            });
       }
     }
-
-    woobt_init($wrap);
   });
 
   $(document).on('reset_data', function(e) {
@@ -349,6 +394,9 @@
     var $products = $(e['target']).closest('.woobt-products');
     var $product = $(e['target']).closest('.woobt-product');
     var order = $product.attr('data-order');
+    var pid = $(e['target']).
+        closest('.variations_form').
+        attr('data-product_id');
 
     if ($product.length) {
       $product.attr('data-id', 0);
@@ -386,6 +434,11 @@
         $img.html($img.attr('data-img'));
       }
     } else {
+      if ($('.woobt-wrap-' + pid).length &&
+          ($('.woobt-wrap-' + pid).data('variable') !== undefined)) {
+        $('.woobt-wrap-' + pid).html($('.woobt-wrap-' + pid).data('variable'));
+      }
+
       if ($(e['target']).closest('.woosb-product').length ||
           $(e['target']).closest('.woosg-product').length ||
           $(e['target']).closest('.woofs-product').length) {
@@ -631,6 +684,7 @@
 })(jQuery);
 
 function woobt_init($wrap) {
+  woobt_carousel($wrap);
   woobt_check_ready($wrap);
   woobt_calc_price($wrap);
   woobt_save_ids($wrap);
@@ -640,6 +694,30 @@ function woobt_init($wrap) {
   }
 
   jQuery(document).trigger('woobt_init', [$wrap]);
+}
+
+function woobt_carousel($wrap) {
+  if (!$wrap.hasClass('woobt-carousel-initialized')) {
+    let slides = 2;
+    let carousel = JSON.parse(woobt_vars.carousel_params);
+
+    if ($wrap.hasClass('woobt-layout-carousel-2') ||
+        $wrap.hasClass('woobt-layout-carousel-3') ||
+        $wrap.hasClass('woobt-layout-carousel-4')) {
+      if ($wrap.hasClass('woobt-layout-carousel-3')) {
+        slides = 3;
+      } else if ($wrap.hasClass('woobt-layout-carousel-4')) {
+        slides = 4;
+      }
+
+      carousel.slidesToShow = slides;
+      carousel.slidesToScroll = slides;
+
+      $wrap.addClass('woobt-carousel-initialized').
+          find('.woobt-products').
+          slick(carousel);
+    }
+  }
 }
 
 function woobt_check_position($wrap) {
