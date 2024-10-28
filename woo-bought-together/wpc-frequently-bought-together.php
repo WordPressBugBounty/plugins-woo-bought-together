@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.4.0
+Version: 7.4.1
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -17,7 +17,7 @@ WC tested up to: 9.3
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.4.0' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.4.1' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -1528,7 +1528,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					return $found_in_cart;
 				}
 
-				function add_to_cart_validation( $passed, $product_id, $quantity, $variation_id ) {
+				function add_to_cart_validation( $passed, $product_id, $quantity, $variation_id = 0 ) {
 					if ( apply_filters( 'woobt_add_to_cart_validation', true ) && ( isset( $_REQUEST['woobt_ids'] ) || isset( $_REQUEST['data']['woobt_ids'] ) ) ) {
 						if ( isset( $_REQUEST['woobt_ids'] ) ) {
 							$validate_items = self::get_items_from_ids( $_REQUEST['woobt_ids'], $product_id );
