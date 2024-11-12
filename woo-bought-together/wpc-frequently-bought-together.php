@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.4.1
+Version: 7.4.2
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -17,7 +17,7 @@ WC tested up to: 9.3
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.4.1' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.4.2' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -1045,6 +1045,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 <option value="date" <?php selected( $get_orderby, 'date' ); ?>><?php esc_html_e( 'Date', 'woo-bought-together' ); ?></option>
 <option value="price" <?php selected( $get_orderby, 'price' ); ?>><?php esc_html_e( 'Price', 'woo-bought-together' ); ?></option>
 <option value="modified" <?php selected( $get_orderby, 'modified' ); ?>><?php esc_html_e( 'Modified', 'woo-bought-together' ); ?></option>
+<option value="rand" <?php selected( $get_orderby, 'rand' ); ?>><?php esc_html_e( 'Random', 'woo-bought-together' ); ?></option>
 </select>
 </label>
 									</span>
@@ -2984,7 +2985,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                                             <div class="label">
 																<?php echo wc_attribute_label( $attribute_name ); ?>
                                                             </div>
-                                                            <div class="select">
+                                                            <div class="select value">
 																<?php
 																$selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( stripslashes( urldecode( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) ) : $product->get_variation_default_attribute( $attribute_name );
 																wc_dropdown_variation_attribute_options( [
