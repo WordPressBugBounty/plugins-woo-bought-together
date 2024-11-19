@@ -346,6 +346,16 @@
 
   // smart rules
 
+  $(document).on('change', '.woobt_rule_active', function() {
+    var active = $(this).val();
+
+    if (active === 'yes') {
+      $(this).closest('.woobt_rule').addClass('active');
+    } else {
+      $(this).closest('.woobt_rule').removeClass('active');
+    }
+  });
+
   $(document).on('change', '.woobt_source_selector', function() {
     var $this = $(this);
     var type = $this.data('type');
@@ -379,7 +389,7 @@
   $(document).on('click touch', '.woobt_rule_heading', function(e) {
     if ($(e.target).closest('.woobt_rule_remove').length === 0 &&
         $(e.target).closest('.woobt_rule_duplicate').length === 0) {
-      $(this).closest('.woobt_rule').toggleClass('active');
+      $(this).closest('.woobt_rule').toggleClass('open');
     }
   });
 
@@ -467,13 +477,13 @@
   $(document).on('click touch', '.woobt_expand_all', function(e) {
     e.preventDefault();
 
-    $('.woobt_rule').addClass('active');
+    $('.woobt_rule').addClass('open');
   });
 
   $(document).on('click touch', '.woobt_collapse_all', function(e) {
     e.preventDefault();
 
-    $('.woobt_rule').removeClass('active');
+    $('.woobt_rule').removeClass('open');
   });
 
   $(document).on('click touch', '.woobt_conditional_remove', function(e) {

@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.4.2
+Version: 7.5.0
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -12,12 +12,14 @@ Requires Plugins: woocommerce
 Requires at least: 4.0
 Tested up to: 6.7
 WC requires at least: 3.0
-WC tested up to: 9.3
+WC tested up to: 9.4
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.4.2' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.0' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -230,6 +232,14 @@ if ( ! function_exists( 'woobt_init' ) ) {
 				function available_variation( $data, $variable, $variation ) {
 					if ( $image_id = $variation->get_image_id() ) {
 						$data['woobt_image'] = wp_get_attachment_image( $image_id, self::$image_size );
+					}
+
+					$items = self::get_rule_items( $variation->get_id(), 'available_variation' );
+
+					if ( ! empty( $items ) ) {
+						$data['woobt_items'] = 'yes';
+					} else {
+						$data['woobt_items'] = 'no';
 					}
 
 					return $data;
@@ -455,9 +465,9 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                                         <option value="grid-2" <?php selected( $layout, 'grid-2' ); ?>><?php esc_html_e( 'Grid - 2 columns', 'woo-bought-together' ); ?></option>
                                                         <option value="grid-3" <?php selected( $layout, 'grid-3' ); ?>><?php esc_html_e( 'Grid - 3 columns', 'woo-bought-together' ); ?></option>
                                                         <option value="grid-4" <?php selected( $layout, 'grid-4' ); ?>><?php esc_html_e( 'Grid - 4 columns', 'woo-bought-together' ); ?></option>
-                                                        <option value="carousel-2" <?php selected( $layout, 'carousel-2' ); ?> disabled><?php esc_html_e( 'Carousel - 2 columns (Premium)', 'woo-bought-together' ); ?></option>
-                                                        <option value="carousel-3" <?php selected( $layout, 'carousel-3' ); ?> disabled><?php esc_html_e( 'Carousel - 3 columns (Premium)', 'woo-bought-together' ); ?></option>
-                                                        <option value="carousel-4" <?php selected( $layout, 'carousel-4' ); ?> disabled><?php esc_html_e( 'Carousel - 4 columns (Premium)', 'woo-bought-together' ); ?></option>
+                                                        <option value="carousel-2" <?php selected( $layout, 'carousel-2' ); ?>><?php esc_html_e( 'Carousel - 2 columns', 'woo-bought-together' ); ?></option>
+                                                        <option value="carousel-3" <?php selected( $layout, 'carousel-3' ); ?>><?php esc_html_e( 'Carousel - 3 columns', 'woo-bought-together' ); ?></option>
+                                                        <option value="carousel-4" <?php selected( $layout, 'carousel-4' ); ?>><?php esc_html_e( 'Carousel - 4 columns', 'woo-bought-together' ); ?></option>
                                                     </select> </label>
                                             </td>
                                         </tr>
@@ -946,11 +956,12 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					<?php
 				}
 
-				function rule( $key = '', $name = 'woobt_rules', $rule = null, $active = false ) {
+				function rule( $key = '', $name = 'woobt_rules', $rule = null, $open = false ) {
 					if ( empty( $key ) || is_numeric( $key ) ) {
 						$key = self::generate_key();
 					}
 
+					$active            = $rule['active'] ?? 'yes';
 					$apply             = $rule['apply'] ?? 'all';
 					$apply_products    = (array) ( $rule['apply_products'] ?? [] );
 					$apply_terms       = (array) ( $rule['apply_terms'] ?? [] );
@@ -965,8 +976,9 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					$price             = $rule['price'] ?? '100%';
 					$discount          = $rule['discount'] ?? '0';
 					$input_name        = $name . '[' . $key . ']';
+					$rule_class        = 'woobt_rule' . ( $open ? ' open' : '' ) . ( $active === 'yes' ? ' active' : '' );
 					?>
-                    <div class="<?php echo esc_attr( $active ? 'woobt_rule active' : 'woobt_rule' ); ?>" data-key="<?php echo esc_attr( $key ); ?>">
+                    <div class="<?php echo esc_attr( $rule_class ); ?>" data-key="<?php echo esc_attr( $key ); ?>">
                         <input type="hidden" name="<?php echo esc_attr( $input_name . '[key]' ); ?>" value="<?php echo esc_attr( $key ); ?>"/>
                         <div class="woobt_rule_heading">
                             <span class="woobt_rule_move"></span>
@@ -975,6 +987,15 @@ if ( ! function_exists( 'woobt_init' ) ) {
                             <a href="#" class="woobt_rule_remove"><?php esc_html_e( 'remove', 'woo-bought-together' ); ?></a>
                         </div>
                         <div class="woobt_rule_content">
+                            <div class="woobt_tr woobt_tr_stripes">
+                                <div class="woobt_th"><?php esc_html_e( 'Active', 'woo-bought-together' ); ?></div>
+                                <div class="woobt_td woobt_rule_td">
+                                    <label><select name="<?php echo esc_attr( $input_name . '[active]' ); ?>" class="woobt_rule_active">
+                                            <option value="yes" <?php selected( $active, 'yes' ); ?>><?php esc_html_e( 'Yes', 'woo-bought-together' ); ?></option>
+                                            <option value="no" <?php selected( $active, 'no' ); ?>><?php esc_html_e( 'No', 'woo-bought-together' ); ?></option>
+                                        </select></label>
+                                </div>
+                            </div>
                             <div class="woobt_tr">
                                 <div class="woobt_th woobt_th_full">
 									<?php esc_html_e( 'Add FBT products to which?', 'woo-bought-together' ); ?>
@@ -1351,6 +1372,10 @@ if ( ! function_exists( 'woobt_init' ) ) {
 				}
 
 				function enqueue_scripts() {
+					// carousel
+					wp_enqueue_style( 'slick', WOOBT_URI . 'assets/slick/slick.css' );
+					wp_enqueue_script( 'slick', WOOBT_URI . 'assets/slick/slick.min.js', [ 'jquery' ], WOOBT_VERSION, true );
+
 					wp_enqueue_style( 'woobt-frontend', WOOBT_URI . 'assets/css/frontend.css', [], WOOBT_VERSION );
 					wp_enqueue_script( 'woobt-frontend', WOOBT_URI . 'assets/js/frontend.js', [ 'jquery' ], WOOBT_VERSION, true );
 					wp_localize_script( 'woobt-frontend', 'woobt_vars', apply_filters( 'woobt_vars', [
@@ -2384,9 +2409,9 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                             <option value="grid-2" <?php selected( $layout, 'grid-2' ); ?>><?php esc_html_e( 'Grid - 2 columns', 'woo-bought-together' ); ?></option>
                                             <option value="grid-3" <?php selected( $layout, 'grid-3' ); ?>><?php esc_html_e( 'Grid - 3 columns', 'woo-bought-together' ); ?></option>
                                             <option value="grid-4" <?php selected( $layout, 'grid-4' ); ?>><?php esc_html_e( 'Grid - 4 columns', 'woo-bought-together' ); ?></option>
-                                            <option value="carousel-2" <?php selected( $layout, 'carousel-2' ); ?> disabled><?php esc_html_e( 'Carousel - 2 columns (Premium)', 'woo-bought-together' ); ?></option>
-                                            <option value="carousel-3" <?php selected( $layout, 'carousel-3' ); ?> disabled><?php esc_html_e( 'Carousel - 3 columns (Premium)', 'woo-bought-together' ); ?></option>
-                                            <option value="carousel-4" <?php selected( $layout, 'carousel-4' ); ?> disabled><?php esc_html_e( 'Carousel - 4 columns (Premium)', 'woo-bought-together' ); ?></option>
+                                            <option value="carousel-2" <?php selected( $layout, 'carousel-2' ); ?>><?php esc_html_e( 'Carousel - 2 columns', 'woo-bought-together' ); ?></option>
+                                            <option value="carousel-3" <?php selected( $layout, 'carousel-3' ); ?>><?php esc_html_e( 'Carousel - 3 columns', 'woo-bought-together' ); ?></option>
+                                            <option value="carousel-4" <?php selected( $layout, 'carousel-4' ); ?>><?php esc_html_e( 'Carousel - 4 columns', 'woo-bought-together' ); ?></option>
                                         </select> </label>
                                 </td>
                             </tr>
@@ -3479,21 +3504,6 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					return apply_filters( 'woobt_get_product_items', $items, $product, $context );
 				}
 
-				function get_rule( $product ) {
-					$rule = [];
-
-					if ( ! empty( self::$rules ) ) {
-						foreach ( self::$rules as $r ) {
-							if ( self::check_rule( $r, $product ) ) {
-								$rule = $r;
-								break;
-							}
-						}
-					}
-
-					return apply_filters( 'woobt_get_rule', $rule, $product );
-				}
-
 				function check_rule( $rule, $product ) {
 					if ( is_a( $product, 'WC_Product' ) ) {
 						$product_id = $product->get_id();
@@ -3588,6 +3598,10 @@ if ( ! function_exists( 'woobt_init' ) ) {
 
 							return false;
 					}
+				}
+
+				function get_rule( $product ) {
+					return apply_filters( 'woobt_get_rule', [], $product );
 				}
 
 				function get_rule_items( $product = null, $context = 'view' ) {

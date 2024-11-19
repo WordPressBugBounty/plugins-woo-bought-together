@@ -725,8 +725,30 @@ table.wp-list-table span.product-type.woobt:before {
     text-decoration: none !important;
 }
 
-.woobt_rule.active .woobt_rule_heading:after {
+.woobt_rule.open .woobt_rule_heading:after {
     content: "\f142";
+}
+
+.woobt_rule .woobt_rule_heading .woobt_rule_label {
+    opacity: 0.5;
+}
+
+.woobt_rule .woobt_rule_heading .woobt_rule_label:before {
+    content: '';
+    display: inline-block;
+    margin-right: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+    background-color: #999999;
+}
+
+.woobt_rule.active .woobt_rule_heading .woobt_rule_label {
+    opacity: 1;
+}
+
+.woobt_rule.active .woobt_rule_heading .woobt_rule_label:before {
+    background-color: #458746;
 }
 
 .woobt_rule_heading .woobt_rule_move {
@@ -793,7 +815,7 @@ table.wp-list-table span.product-type.woobt:before {
     max-width: 80px;
 }
 
-.woobt_rule.active .woobt_rule_content {
+.woobt_rule.open .woobt_rule_content {
     display: block;
 }
 
@@ -808,6 +830,10 @@ table.wp-list-table span.product-type.woobt:before {
     display: flex;
     align-items: center;
     border-bottom: 1px dashed #dddddd;
+}
+
+.woobt_rules .woobt_rule .woobt_tr.woobt_tr_stripes {
+    background: repeating-linear-gradient(45deg, #ffffff, #ffffff 10px, #fafafa 10px, #fafafa 20px);
 }
 
 .woobt_rules .woobt_rule .woobt_tr:last-child {

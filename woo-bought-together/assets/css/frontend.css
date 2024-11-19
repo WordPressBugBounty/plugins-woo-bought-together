@@ -623,16 +623,15 @@
     display: none;
 }
 
-.woobt-wrap[class*=woobt-layout-carousel] {
+.woobt-products[class*=woobt-products-layout-carousel] {
     display: none !important;
 }
 
-.woobt-wrap.woobt-carousel-initialized {
-    display: block !important;
-    position: relative;
+.woobt-products[class*=woobt-products-layout-carousel].woobt-carousel {
+    display: flex !important;
 }
 
-.woobt-carousel-initialized .slick-dots {
+.woobt-carousel .slick-dots {
     display: block;
     width: 100%;
     list-style: none;
@@ -641,13 +640,13 @@
     padding: 0;
 }
 
-.woobt-carousel-initialized .slick-dots li {
+.woobt-carousel .slick-dots li {
     display: inline-block;
     margin: 0 5px;
     font-size: 0;
 }
 
-.woobt-carousel-initialized .slick-dots li button {
+.woobt-carousel .slick-dots li button {
     width: 8px;
     height: 8px;
     border-radius: 4px;
@@ -660,11 +659,11 @@
     overflow: hidden;
 }
 
-.woobt-carousel-initialized .slick-dots li.slick-active button {
+.woobt-carousel .slick-dots li.slick-active button {
     background-color: rgb(0, 0, 0);
 }
 
-.woobt-carousel-initialized .slick-arrow {
+.woobt-carousel .slick-arrow {
     width: 44px;
     height: 44px;
     line-height: 42px;
@@ -685,17 +684,17 @@
     visibility: hidden;
 }
 
-.woobt-carousel-initialized:hover .slick-arrow {
+.woobt-carousel:hover .slick-arrow {
     opacity: 1;
     visibility: visible;
 }
 
-.woobt-carousel-initialized .slick-arrow:hover {
+.woobt-carousel .slick-arrow:hover {
     color: #fff;
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.woobt-carousel-initialized .slick-arrow:before {
+.woobt-carousel .slick-arrow:before {
     font-size: 24px;
     line-height: 44px;
     font-style: normal;
@@ -707,23 +706,23 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.woobt-carousel-initialized .slick-arrow:focus {
+.woobt-carousel .slick-arrow:focus {
     outline: none;
 }
 
-.woobt-carousel-initialized .slick-arrow.slick-prev {
+.woobt-carousel .slick-arrow.slick-prev {
     left: 10px;
 }
 
-.woobt-carousel-initialized .slick-arrow.slick-prev:before {
+.woobt-carousel .slick-arrow.slick-prev:before {
     content: "‹";
 }
 
-.woobt-carousel-initialized .slick-arrow.slick-next {
+.woobt-carousel .slick-arrow.slick-next {
     right: 10px;
 }
 
-.woobt-carousel-initialized .slick-arrow.slick-next:before {
+.woobt-carousel .slick-arrow.slick-next:before {
     content: "›";
 }
 
@@ -795,6 +794,19 @@
     width: auto;
     top: 10px;
     right: 10px;
+}
+
+body.rtl .woobt-wrap.woobt-layout-compact .woobt-inner .woobt-products {
+    margin: 0 -10px 0 10px;
+}
+
+body.rtl .woobt-wrap.woobt-layout-compact .woobt-inner .woobt-products .woobt-product:first-child:before {
+    display: none;
+}
+
+body.rtl .woobt-wrap.woobt-layout-compact .woobt-inner .woobt-products .woobt-product:last-child:before {
+    content: "+";
+    display: block;
 }
 
 .woobt-wrap.woobt-layout-compact .woobt-inner .woobt-actions .single_add_to_cart_button {
