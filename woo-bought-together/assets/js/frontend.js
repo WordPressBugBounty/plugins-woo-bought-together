@@ -642,9 +642,8 @@
         $wrap.find('.woobt-product-this select[name^=attribute]').
             each(function() {
               var attribute = $(this).attr('name');
-              var attribute_value = $(this).val();
 
-              attrs[attribute] = attribute_value;
+              attrs[attribute] = $(this).val();
             });
 
         data.action = 'woobt_add_all_to_cart';
@@ -817,9 +816,12 @@ function woobt_calc_price($wrap) {
   var $product_this = $products.find('.woobt-product-this');
   var count = 0, total = 0, total_regular = 0;
   var ori_price_suffix = $products.attr('data-product-price-suffix');
-  var ori_price = parseFloat($product_this.attr('data-price'));
-  var ori_price_regular = parseFloat($product_this.attr('data-regular-price'));
-  var ori_qty = parseFloat($product_this.attr('data-qty'));
+  var ori_price = parseFloat(
+      $product_this.length ? $product_this.attr('data-price') : 0);
+  var ori_price_regular = parseFloat(
+      $product_this.length ? $product_this.attr('data-regular-price') : 0);
+  var ori_qty = parseFloat(
+      $product_this.length ? $product_this.attr('data-qty') : 0);
   var total_ori = ori_price * ori_qty;
   var total_ori_regular = ori_price_regular * ori_qty;
   var $price = jQuery('.woobt-price-' + pid);
@@ -997,6 +999,7 @@ function woobt_save_ids($wrap) {
 
 function woobt_update_count($wrap) {
   var pid = $wrap.attr('data-id');
+  var ignore_this = $wrap.attr('data-ignore-this');
   var $products = $wrap.find('.woobt-products');
   var $main_btn = jQuery('.woobt-ids-' + pid).
       closest('form.cart').
@@ -1019,7 +1022,7 @@ function woobt_update_count($wrap) {
     }
   });
 
-  if (num > 1) {
+  if ((num > 1) || (ignore_this === 'yes' && num > 0)) {
     if (woobt_vars.counter === 'individual') {
       if ($main_btn.find('.woobt-count').length) {
         $main_btn.find('.woobt-count').text(num);
