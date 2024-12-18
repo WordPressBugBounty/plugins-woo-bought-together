@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.5.2
+Version: 7.5.3
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -12,14 +12,14 @@ Requires Plugins: woocommerce
 Requires at least: 4.0
 Tested up to: 6.7
 WC requires at least: 3.0
-WC tested up to: 9.4
+WC tested up to: 9.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.2' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.3' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -2396,6 +2396,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
                                     </label>
                                 </td>
                             </tr>
+							<?php do_action( 'woobt_product_settings', $product_id ); ?>
                             <tr class="woobt_tr_space">
                                 <th><?php esc_html_e( 'Displaying', 'woo-bought-together' ); ?></th>
                                 <td>
@@ -3024,10 +3025,12 @@ if ( ! function_exists( 'woobt_init' ) ) {
 														echo '<div class="variations_form woobt_variations_form" action="' . esc_url( $product->get_permalink() ) . '" data-product_id="' . absint( $product_id ) . '" data-product_variations="' . htmlspecialchars( wp_json_encode( $available_variations ) ) . '">';
 														echo '<div class="variations">';
 
-														foreach ( $attributes as $attribute_name => $options ) { ?>
-                                                            <div class="variation">
+														foreach ( $attributes as $attribute_name => $options ) {
+															$attribute_name_sz = sanitize_title( $attribute_name );
+															?>
+                                                            <div class="<?php echo esc_attr( 'variation variation-' . $attribute_name_sz ); ?>">
                                                                 <div class="label">
-																	<?php echo wc_attribute_label( $attribute_name ); ?>
+                                                                    <label for="<?php echo esc_attr( $attribute_name_sz ); ?>"><?php echo esc_html( wc_attribute_label( $attribute_name ) ); ?></label>
                                                                 </div>
                                                                 <div class="select value">
 																	<?php
@@ -3067,13 +3070,6 @@ if ( ! function_exists( 'woobt_init' ) ) {
 												echo '<div class="woobt-quantity-input-minus">-</div>';
 											}
 
-											$this_max = 1000;
-
-											if ( ( $max_purchase = $product->get_max_purchase_quantity() ) && ( $max_purchase > 0 ) && ( $max_purchase < $this_max ) ) {
-												// get_max_purchase_quantity can return -1
-												$this_max = $max_purchase;
-											}
-
 											woocommerce_quantity_input( [
 												'classes'    => [
 													'input-text',
@@ -3083,7 +3079,8 @@ if ( ! function_exists( 'woobt_init' ) ) {
 													'text'
 												],
 												'input_name' => 'woobt_qty_0',
-												'max_value'  => $this_max
+												'min_value'  => $product->get_min_purchase_quantity(),
+												'max_value'  => $product->get_max_purchase_quantity(),
 											], $product );
 
 											if ( $plus_minus ) {

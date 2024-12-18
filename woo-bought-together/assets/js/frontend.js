@@ -752,19 +752,26 @@ function woobt_check_ready($wrap) {
       : $ids.closest('form.cart');
   var $btn = $form.find('.single_add_to_cart_button:not(.wpcbn-btn)');
   var is_selection = false;
+  var is_empty = true;
+  var has_this = false;
   var selection_name = '';
 
   $products.find('.woobt-product').each(function() {
     var $this = jQuery(this);
+
+    if ($this.hasClass('woobt-hide-this')) {
+      // skip
+      return true;
+    }
+
     var $images = $this.closest('.woobt-wrap').find('.woobt-images');
     var _checked = $this.find('.woobt-checkbox').prop('checked');
     var _id = parseInt($this.attr('data-id'));
     var _qty = parseInt($this.attr('data-qty'));
-    var _pid = parseInt($this.attr('data-pid'));
     var _order = parseInt($this.attr('data-order'));
 
-    if ($this.hasClass('woobt-hide-this')) {
-      return true;
+    if ($this.hasClass('woobt-product-this') && (_id === 0) && (_qty > 0)) {
+      has_this = true;
     }
 
     if (!_checked) {
@@ -783,7 +790,7 @@ function woobt_check_ready($wrap) {
       }
     }
 
-    if (_checked && (_id == 0) && (_qty > 0)) {
+    if (_checked && (_id === 0) && (_qty > 0)) {
       is_selection = true;
 
       if (selection_name === '') {
@@ -792,19 +799,24 @@ function woobt_check_ready($wrap) {
     }
   });
 
-  if (is_selection) {
-    $btn.addClass('woobt-disabled woobt-selection');
-    $alert.html(woobt_vars.alert_selection.replace('[name]',
-        '<strong>' + selection_name + '</strong>')).slideDown();
-
-    jQuery(document).trigger('woobt_check_ready', [false, is_selection, $wrap]);
+  if (is_empty && !has_this) {
+    $btn.addClass('woobt-disabled woobt-empty');
   } else {
-    $btn.removeClass('woobt-disabled woobt-selection');
-    $alert.html('').slideUp();
+    $btn.removeClass('woobt-disabled woobt-empty');
 
-    // ready
-    jQuery(document).trigger('woobt_check_ready', [true, is_selection, $wrap]);
+    if (is_selection) {
+      $btn.addClass('woobt-disabled woobt-selection');
+      $alert.html(woobt_vars.alert_selection.replace('[name]',
+          '<strong>' + selection_name + '</strong>')).slideDown();
+    } else {
+      $btn.removeClass('woobt-disabled woobt-selection');
+      $alert.html('').slideUp();
+    }
   }
+
+  // trigger
+  jQuery(document).
+      trigger('woobt_check_ready', [is_empty, is_selection, $wrap]);
 }
 
 function woobt_calc_price($wrap) {
@@ -889,8 +901,6 @@ function woobt_calc_price($wrap) {
       var _sale_price = parseFloat($product_this.attr('data-price'));
       var _new_price = _sale_price;
       var _regular_price = parseFloat($product_this.attr('data-regular-price'));
-      var _total_regular = _qty * _regular_price;
-      var _total = 0;
 
       if (total > 0 && parseFloat($product_this.attr('data-id')) > 0) {
         var _price = $product_this.attr('data-new-price');
@@ -907,16 +917,18 @@ function woobt_calc_price($wrap) {
         total_ori = _new_price * _qty;
       }
 
-      if (show_price === 'total') {
-        _total = _qty * _new_price;
-      } else {
-        _total = _new_price;
-      }
-
       $product_this.find('.woobt-price-ori').hide();
-      $product_this.find('.woobt-price-new').
-          html(woobt_price_html(_total_regular, _total) + _price_suffix).
-          show();
+
+      if (show_price === 'total') {
+        $product_this.find('.woobt-price-new').
+            html(woobt_price_html(_qty * _regular_price, _qty * _new_price) +
+                _price_suffix).
+            show();
+      } else {
+        $product_this.find('.woobt-price-new').
+            html(woobt_price_html(_regular_price, _new_price) + _price_suffix).
+            show();
+      }
     } else {
       $product_this.find('.woobt-price-new').hide();
       $product_this.find('.woobt-price-ori').show();
