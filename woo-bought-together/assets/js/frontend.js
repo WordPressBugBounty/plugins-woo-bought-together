@@ -686,13 +686,15 @@ function woobt_init($wrap) {
     $wrap.data('variable', $wrap.html());
   }
 
-  woobt_carousel($wrap);
-  woobt_check_ready($wrap);
-  woobt_calc_price($wrap);
-  woobt_save_ids($wrap);
+  if ($wrap.html() !== '') {
+    woobt_carousel($wrap);
+    woobt_check_ready($wrap);
+    woobt_calc_price($wrap);
+    woobt_save_ids($wrap);
 
-  if (woobt_vars.counter !== 'hide') {
-    woobt_update_count($wrap);
+    if (woobt_vars.counter !== 'hide') {
+      woobt_update_count($wrap);
+    }
   }
 
   jQuery(document).trigger('woobt_init', [$wrap]);
