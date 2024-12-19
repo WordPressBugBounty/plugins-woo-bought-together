@@ -686,7 +686,7 @@ function woobt_init($wrap) {
     $wrap.data('variable', $wrap.html());
   }
 
-  if ($wrap.html() !== '') {
+  if ($wrap.find('.woobt-products').length) {
     woobt_carousel($wrap);
     woobt_check_ready($wrap);
     woobt_calc_price($wrap);
@@ -755,7 +755,6 @@ function woobt_check_ready($wrap) {
   var $btn = $form.find('.single_add_to_cart_button:not(.wpcbn-btn)');
   var is_selection = false;
   var is_empty = true;
-  var has_this = false;
   var selection_name = '';
 
   $products.find('.woobt-product').each(function() {
@@ -771,10 +770,6 @@ function woobt_check_ready($wrap) {
     var _id = parseInt($this.attr('data-id'));
     var _qty = parseInt($this.attr('data-qty'));
     var _order = parseInt($this.attr('data-order'));
-
-    if ($this.hasClass('woobt-product-this') && (_id === 0) && (_qty > 0)) {
-      has_this = true;
-    }
 
     if (!_checked) {
       $this.addClass('woobt-hide');
@@ -799,21 +794,20 @@ function woobt_check_ready($wrap) {
         selection_name = $this.attr('data-name');
       }
     }
+
+    if (!$this.hasClass('woobt-product-this') && _checked && (_id > 0) &&
+        (_qty > 0)) {
+      is_empty = false;
+    }
   });
 
-  if (is_empty && !has_this) {
-    $btn.addClass('woobt-disabled woobt-empty');
+  if (is_selection) {
+    $btn.addClass('woobt-disabled woobt-selection');
+    $alert.html(woobt_vars.alert_selection.replace('[name]',
+        '<strong>' + selection_name + '</strong>')).slideDown();
   } else {
-    $btn.removeClass('woobt-disabled woobt-empty');
-
-    if (is_selection) {
-      $btn.addClass('woobt-disabled woobt-selection');
-      $alert.html(woobt_vars.alert_selection.replace('[name]',
-          '<strong>' + selection_name + '</strong>')).slideDown();
-    } else {
-      $btn.removeClass('woobt-disabled woobt-selection');
-      $alert.html('').slideUp();
-    }
+    $btn.removeClass('woobt-disabled woobt-selection');
+    $alert.html('').slideUp();
   }
 
   // trigger
