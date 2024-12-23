@@ -333,6 +333,11 @@
 
                 $wrap.removeClass('woobt-loading');
               });
+        } else {
+          $wrap.html($wrap.data('variable'));
+          $wrap.find('.woobt_variations_form').each(function() {
+            $(this).wc_variation_form();
+          });
         }
 
         if (atc_button === 'main' || atc_button === 'both') {
