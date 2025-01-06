@@ -416,10 +416,6 @@
     padding: 20px 0;
   }
 
-  .woobt-wrap-responsive .woobt-products .woobt-product.woobt-hide-this {
-    display: none;
-  }
-
   .woobt-wrap-responsive .woobt-products .woobt-product > div {
     padding: 5px 0 !important;
     width: auto !important;
@@ -628,7 +624,7 @@
   display: none !important;
 }
 
-.woobt-products[class*="woobt-products-layout-carousel"].woobt-carousel {
+.woobt-products[class*="woobt-products-layout-carousel"].woobt-carousel, .woobt-products[class*="woobt-products-layout-carousel"].woobt-no-carousel {
   display: flex !important;
 }
 

@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.5.6
+Version: 7.5.7
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -19,7 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.6' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.7' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -2989,7 +2989,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 
                                         <div class="woobt-title">
                                 <span class="woobt-title-inner">
-                                    <?php echo '<span>' . self::localization( 'this_item', esc_html__( 'This item:', 'woo-bought-together' ) ) . '</span> <span>' . apply_filters( 'woobt_product_get_name', $product->get_name(), $product ) . '</span>'; ?>
+                                    <?php echo apply_filters( 'woobt_product_this_name', '<span>' . self::localization( 'this_item', esc_html__( 'This item:', 'woo-bought-together' ) ) . '</span> <span>' . apply_filters( 'woobt_product_get_name', $product->get_name(), $product ) . '</span>', $product ); ?>
                                 </span>
 
 											<?php if ( $separate_images && ( self::get_setting( 'show_price', 'yes' ) !== 'no' ) ) { ?>

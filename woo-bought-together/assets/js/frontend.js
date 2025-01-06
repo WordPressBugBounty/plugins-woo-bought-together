@@ -62,7 +62,7 @@
         }
 
         // change price
-        var new_price = $product.attr('data-new-price');
+        var new_price = $product.attr('data-new-price') ?? '100%';
 
         $product.find('.woobt-price-ori').hide();
 
@@ -197,7 +197,7 @@
 
     if ($product.length) {
       if ($product.hasClass('woobt-product-together')) {
-        var new_price = $product.attr('data-new-price');
+        var new_price = $product.attr('data-new-price') ?? '100%';
 
         if (new_price !== '100%') {
           if (isNaN(new_price)) {
@@ -723,8 +723,18 @@ function woobt_carousel($wrap) {
       carousel.slidesToShow = slides;
       carousel.slidesToScroll = slides;
 
-      if (!$products.hasClass('woobt-carousel')) {
-        $products.addClass('woobt-carousel').slick(carousel);
+      if ($products.find('.woobt-product:not(.woobt-hide-this)').length >
+          slides) {
+        if (!$products.hasClass('woobt-carousel')) {
+          $products.addClass('woobt-carousel').slick(carousel);
+          //$products.slick('slickFilter','.woobt-product:not(.woobt-hide-this)');
+        }
+      } else {
+        if ($products.hasClass('woobt-carousel')) {
+          $products.removeClass('woobt-carousel').slick('unslick');
+        }
+
+        $products.addClass('woobt-no-carousel');
       }
     }
   }
@@ -852,7 +862,7 @@ function woobt_calc_price($wrap) {
     var _checked = $this.find('.woobt-checkbox').prop('checked');
     var _id = parseInt($this.attr('data-id'));
     var _qty = parseFloat($this.attr('data-qty'));
-    var _price = $this.attr('data-new-price');
+    var _price = $this.attr('data-new-price') ?? '100%';
     var _price_suffix = $this.attr('data-price-suffix');
     var _sale_price = parseFloat($this.attr('data-price'));
     var _regular_price = parseFloat($this.attr('data-regular-price'));
@@ -871,7 +881,7 @@ function woobt_calc_price($wrap) {
         _total = _total_ori * parseFloat(_price) / 100;
       }
     } else {
-      _total = _qty * _price;
+      _total = _qty * parseFloat(_price);
     }
 
     if (show_price === 'total') {
@@ -894,40 +904,43 @@ function woobt_calc_price($wrap) {
   total_regular = Math.round(total_regular * fix) / fix;
 
   if ($product_this.length) {
-    var _id = parseInt($product_this.attr('data-id'));
-    var _qty = parseFloat($product_this.attr('data-qty'));
+    var _this_id = parseInt($product_this.attr('data-id'));
+    var _this_qty = parseFloat($product_this.attr('data-qty'));
 
-    if (_qty > 0 && _id > 0) {
-      var _price_suffix = $product_this.attr('data-price-suffix');
-      var _sale_price = parseFloat($product_this.attr('data-price'));
-      var _new_price = _sale_price;
-      var _regular_price = parseFloat($product_this.attr('data-regular-price'));
+    if (_this_qty > 0 && _this_id > 0) {
+      var _this_price_suffix = $product_this.attr('data-price-suffix');
+      var _this_sale_price = parseFloat($product_this.attr('data-price'));
+      var _this_new_price = _this_sale_price;
+      var _this_regular_price = parseFloat(
+          $product_this.attr('data-regular-price'));
 
       if (total > 0 && parseFloat($product_this.attr('data-id')) > 0) {
-        var _price = $product_this.attr('data-new-price');
+        var _this_price = $product_this.attr('data-new-price') ?? '100%';
 
-        if (isNaN(_price)) {
+        if (isNaN(_this_price)) {
           // is percent
-          if (_price !== '100%') {
-            _new_price = woobt_round(_sale_price * parseFloat(_price) / 100);
+          if (_this_price !== '100%') {
+            _this_new_price = woobt_round(
+                _this_sale_price * parseFloat(_this_price) / 100);
           }
         } else {
-          _new_price = _price;
+          _this_new_price = parseFloat(_this_price);
         }
 
-        total_ori = _new_price * _qty;
+        total_ori = _this_new_price * _this_qty;
       }
 
       $product_this.find('.woobt-price-ori').hide();
 
       if (show_price === 'total') {
         $product_this.find('.woobt-price-new').
-            html(woobt_price_html(_qty * _regular_price, _qty * _new_price) +
-                _price_suffix).
+            html(woobt_price_html(_this_qty * _this_regular_price,
+                _this_qty * _this_new_price) + _this_price_suffix).
             show();
       } else {
         $product_this.find('.woobt-price-new').
-            html(woobt_price_html(_regular_price, _new_price) + _price_suffix).
+            html(woobt_price_html(_this_regular_price, _this_new_price) +
+                _this_price_suffix).
             show();
       }
     } else {
