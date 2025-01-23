@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.5.7\n"
+"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.5.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-bought-together\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-01-06T04:07:47+00:00\n"
+"POT-Creation-Date: 2025-01-23T05:03:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: woo-bought-together\n"
@@ -564,7 +564,7 @@ msgstr ""
 #: wpc-frequently-bought-together.php:748
 #: wpc-frequently-bought-together.php:751
 #: wpc-frequently-bought-together.php:1398
-#: wpc-frequently-bought-together.php:3409
+#: wpc-frequently-bought-together.php:3416
 msgid "Add all to cart"
 msgstr ""
 
@@ -1008,70 +1008,70 @@ msgstr ""
 msgid "Under text"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3930
+#: wpc-frequently-bought-together.php:3943
 msgid "Bought together"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3931
+#: wpc-frequently-bought-together.php:3944
 msgid "With associated products"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3932
+#: wpc-frequently-bought-together.php:3945
 msgid "Without associated products"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3987
+#: wpc-frequently-bought-together.php:4000
 msgid "Before wrapper"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3988
+#: wpc-frequently-bought-together.php:4001
 msgid "After wrapper"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3989
+#: wpc-frequently-bought-together.php:4002
 msgid "Before products"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3990
+#: wpc-frequently-bought-together.php:4003
 msgid "After products"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3991
+#: wpc-frequently-bought-together.php:4004
 msgid "Before sub-product"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3992
+#: wpc-frequently-bought-together.php:4005
 msgid "After sub-product"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3993
+#: wpc-frequently-bought-together.php:4006
 msgid "Before sub-product thumbnail"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3994
+#: wpc-frequently-bought-together.php:4007
 msgid "After sub-product thumbnail"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3995
+#: wpc-frequently-bought-together.php:4008
 msgid "Before sub-product name"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3996
+#: wpc-frequently-bought-together.php:4009
 msgid "After sub-product name"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3997
+#: wpc-frequently-bought-together.php:4010
 msgid "Before sub-product price"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3998
+#: wpc-frequently-bought-together.php:4011
 msgid "After sub-product price"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:3999
+#: wpc-frequently-bought-together.php:4012
 msgid "Before sub-product quantity"
 msgstr ""
 
-#: wpc-frequently-bought-together.php:4000
+#: wpc-frequently-bought-together.php:4013
 msgid "After sub-product quantity"
 msgstr ""

@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.5.7
+Version: 7.5.8
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -12,14 +12,14 @@ Requires Plugins: woocommerce
 Requires at least: 4.0
 Tested up to: 6.7
 WC requires at least: 3.0
-WC tested up to: 9.5
+WC tested up to: 9.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.7' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.5.8' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
@@ -1708,7 +1708,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 						if ( $add_items = self::get_items_from_ids( $ids, $product_id ) ) {
 							$custom_qty  = apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id );
 							$separately  = apply_filters( 'woobt_separately', get_post_meta( $product_id, 'woobt_separately', true ) === 'on', $product_id );
-							$reset_price = apply_filters( 'woobt_separately_reset_price', true, $product_id );
+							$reset_price = apply_filters( 'woobt_separately_reset_price', true, $product_id, 'add-to-cart' );
 							$ignore_this = apply_filters( 'woobt_separately_ignore_this_item', false, $product_id );
 							$sync_qty    = ! $custom_qty && apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' );
 
@@ -1741,7 +1741,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 				function add_to_cart_items( $items, $cart_item_key, $product_id, $quantity ) {
 					$custom_qty  = apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id );
 					$separately  = apply_filters( 'woobt_separately', get_post_meta( $product_id, 'woobt_separately', true ) === 'on', $product_id );
-					$reset_price = apply_filters( 'woobt_separately_reset_price', true, $product_id );
+					$reset_price = apply_filters( 'woobt_separately_reset_price', true, $product_id, 'add-to-cart' );
 					$sync_qty    = ! $custom_qty && apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' );
 
 					// add child products
@@ -2757,7 +2757,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 					$sync_qty    = apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on', $product_id );
 					$checked_all = apply_filters( 'woobt_checked_all', get_post_meta( $product_id, 'woobt_checked_all', true ) === 'on', $product_id );
 					$separately  = apply_filters( 'woobt_separately', get_post_meta( $product_id, 'woobt_separately', true ) === 'on', $product_id );
-					$separately  &= apply_filters( 'woobt_separately_reset_price', true, $product_id ); // change it to false if you want to keep the discounted price
+					$separately  &= apply_filters( 'woobt_separately_reset_price', true, $product_id, 'view' ); // change it to false if you want to keep the discounted price
 					$selection   = apply_filters( 'woobt_selection', get_post_meta( $product_id, 'woobt_selection', true ) ?: 'multiple', $product_id );
 
 					$_position       = get_post_meta( $product_id, 'woobt_position', true ) ?: 'unset';
@@ -3074,6 +3074,7 @@ if ( ! function_exists( 'woobt_init' ) ) {
 												'classes'    => [
 													'input-text',
 													'woobt-qty',
+													'woobt_qty',
 													'woobt-this-qty',
 													'qty',
 													'text'
@@ -3297,7 +3298,13 @@ if ( ! function_exists( 'woobt_init' ) ) {
 											}
 
 											woocommerce_quantity_input( [
-												'classes'     => [ 'input-text', 'woobt-qty', 'qty', 'text' ],
+												'classes'     => [
+													'input-text',
+													'woobt-qty',
+													'woobt_qty',
+													'qty',
+													'text'
+												],
 												'input_name'  => 'woobt_qty_' . $order,
 												'input_value' => $item_qty,
 												'min_value'   => $item_min,
@@ -3725,6 +3732,12 @@ if ( ! function_exists( 'woobt_init' ) ) {
 								case 'default':
 									$items = self::get_default_items( $product, $context );
 									break;
+								case 'combine':
+									$product_items = self::get_product_items( $product_id, $context );
+									$rule_items    = self::get_rule_items( $product_id, $context );
+									$default_items = self::get_default_items( $product, $context );
+									$items         = array_merge( $product_items, $rule_items, $default_items );
+									break;
 							}
 
 							if ( ! empty( $items ) ) {
@@ -3888,9 +3901,9 @@ if ( ! function_exists( 'woobt_init' ) ) {
 
 				public static function format_price( $price ) {
 					// format price to percent or number
-					$price = preg_replace( '/[^.%0-9]/', '', $price );
+					$format_price = preg_replace( '/[^.\-%0-9]/', '', $price );
 
-					return apply_filters( 'woobt_format_price', $price );
+					return apply_filters( 'woobt_format_price', $format_price, $price );
 				}
 
 				public static function new_price( $old_price, $new_price ) {
