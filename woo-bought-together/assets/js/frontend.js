@@ -648,6 +648,8 @@
                 $btn.removeClass('loading');
                 $(document.body).trigger('added_to_cart',
                     [response.fragments, response.cart_hash, $btn]);
+                $(document.body).trigger('woobt_added_to_cart',
+                    [response.fragments, response.cart_hash, $btn]);
             });
     });
 })(jQuery);

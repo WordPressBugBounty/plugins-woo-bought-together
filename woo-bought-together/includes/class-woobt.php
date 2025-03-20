@@ -2426,7 +2426,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                         <th><?php esc_html_e( 'Checked all', 'woo-bought-together' ); ?></th>
                         <td>
                             <input id="woobt_checked_all" name="woobt_checked_all"
-                                   type="checkbox" <?php echo esc_attr( get_post_meta( $product_id, 'woobt_checked_all', true ) === 'on' ? 'checked' : '' ); ?>/>
+                                   type="checkbox" <?php echo esc_attr( apply_filters( 'woobt_checked_all', get_post_meta( $product_id, 'woobt_checked_all', true ) === 'on', $product_id ) ? 'checked' : '' ); ?>/>
                             <label for="woobt_checked_all"><?php esc_html_e( 'Checked all by default.', 'woo-bought-together' ); ?></label>
                         </td>
                     </tr>
