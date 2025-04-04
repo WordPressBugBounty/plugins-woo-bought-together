@@ -994,6 +994,8 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			$get_order         = $rule['get_order'] ?? 'default';
 			$price             = $rule['price'] ?? '100%';
 			$discount          = $rule['discount'] ?? '0';
+			$before_text       = $rule['before_text'] ?? '';
+			$after_text        = $rule['after_text'] ?? '';
 			$input_name        = $name . '[' . $key . ']';
 			$rule_class        = 'woobt_rule' . ( $open ? ' open' : '' ) . ( $active === 'yes' ? ' active' : '' );
 			?>
@@ -1051,6 +1053,24 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                                        value="<?php echo esc_attr( $discount ); ?>"/>
                             </label>%.
                             <span class="description"><?php esc_html_e( 'Discount for the main product when buying at least one product in this list.', 'woo-bought-together' ); ?></span>
+                        </div>
+                    </div>
+                    <div class="woobt_tr">
+                        <div class="woobt_th"><?php esc_html_e( 'Above text', 'woo-bought-together' ); ?></div>
+                        <div class="woobt_td woobt_rule_td">
+                            <label>
+                                <textarea name="<?php echo esc_attr( $input_name . '[before_text]' ); ?>" rows="1"
+                                          style="width: 100%"><?php echo esc_textarea( $before_text ); ?></textarea>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="woobt_tr">
+                        <div class="woobt_th"><?php esc_html_e( 'Under text', 'woo-bought-together' ); ?></div>
+                        <div class="woobt_td woobt_rule_td">
+                            <label>
+                                <textarea name="<?php echo esc_attr( $input_name . '[after_text]' ); ?>" rows="1"
+                                          style="width: 100%"><?php echo esc_textarea( $after_text ); ?></textarea>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -1958,29 +1978,31 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 					if ( ! $separately ) {
 						$discount = self::get_discount( $cart_item['product_id'] );
 
-						if ( $cart_item['variation_id'] > 0 ) {
-							$item_product = wc_get_product( $cart_item['variation_id'] );
-						} else {
-							$item_product = wc_get_product( $cart_item['product_id'] );
-						}
+						if ( ! empty( $discount ) ) {
+							if ( $cart_item['variation_id'] > 0 ) {
+								$item_product = wc_get_product( $cart_item['variation_id'] );
+							} else {
+								$item_product = wc_get_product( $cart_item['product_id'] );
+							}
 
-						$item_price = apply_filters( 'woobt_cart_item_product_price', $item_product->get_price(), $item_product );
+							$item_price = apply_filters( 'woobt_cart_item_product_price', $item_product->get_price(), $item_product );
 
-						// has associated products
-						$has_associated = false;
+							// has associated products
+							$has_associated = false;
 
-						if ( isset( $cart_item['woobt_keys'] ) ) {
-							foreach ( $cart_item['woobt_keys'] as $key ) {
-								if ( isset( $cart_contents[ $key ] ) ) {
-									$has_associated = true;
-									break;
+							if ( isset( $cart_item['woobt_keys'] ) ) {
+								foreach ( $cart_item['woobt_keys'] as $key ) {
+									if ( isset( $cart_contents[ $key ] ) ) {
+										$has_associated = true;
+										break;
+									}
 								}
 							}
-						}
 
-						if ( $has_associated && ! empty( $discount ) ) {
-							$item_new_price = $item_price * ( 100 - (float) $discount ) / 100;
-							$cart_item['data']->set_price( $item_new_price );
+							if ( $has_associated ) {
+								$item_new_price = $item_price * ( 100 - (float) $discount ) / 100;
+								$cart_item['data']->set_price( $item_new_price );
+							}
 						}
 					}
 				}
@@ -2933,10 +2955,13 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			}
 
 			if ( ! empty( $items ) ) {
+				$before_text = apply_filters( 'woobt_before_text', self::get_text( $product, 'before' ), $product_id );
+				$after_text  = apply_filters( 'woobt_after_text', self::get_text( $product, 'after' ), $product_id );
+
 				// show items
 				do_action( 'woobt_wrap_before', $product );
 
-				if ( $before_text = apply_filters( 'woobt_before_text', get_post_meta( $product_id, 'woobt_before_text', true ) ?: WPCleverWoobt_Helper()->localization( 'above_text' ), $product_id ) ) {
+				if ( ! empty( $before_text ) ) {
 					do_action( 'woobt_before_text_above', $product );
 					echo '<div class="woobt-before-text woobt-text">' . wp_kses_post( do_shortcode( $before_text ) ) . '</div>';
 					do_action( 'woobt_before_text_below', $product );
@@ -3556,7 +3581,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 					echo '</div><!-- /woobt-inner -->';
 				}
 
-				if ( $after_text = apply_filters( 'woobt_after_text', get_post_meta( $product_id, 'woobt_after_text', true ) ?: WPCleverWoobt_Helper()->localization( 'under_text' ), $product_id ) ) {
+				if ( ! empty( $after_text ) ) {
 					do_action( 'woobt_after_text_above', $product );
 					echo '<div class="woobt-after-text woobt-text">' . wp_kses_post( do_shortcode( $after_text ) ) . '</div>';
 					do_action( 'woobt_after_text_below', $product );
@@ -3875,6 +3900,74 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			}
 
 			return apply_filters( 'woobt_get_items', $items, $product_id, $context );
+		}
+
+		function get_text( $product, $context = 'before' ) {
+			// Optimize product ID extraction
+			$product_id = is_a( $product, 'WC_Product' ) ? $product->get_id() :
+				( is_int( $product ) ? $product : 0 );
+
+			// Early return for invalid products
+			if ( ! $product_id || self::is_disable( $product_id ) ) {
+				return apply_filters( 'woobt_get_text', '', $product, $context );
+			}
+
+			// Cache context check result
+			$is_before = $context === 'before' || $context === 'above';
+
+			// Get priority array with caching
+			static $priority_cache = [];
+
+			if ( ! isset( $priority_cache[ $product_id ] ) ) {
+				$priority_cache[ $product_id ] = apply_filters( 'woobt_get_items_priority',
+					[ 'product', 'rule', 'default' ],
+					$product_id
+				);
+			}
+
+			$text = '';
+
+			foreach ( $priority_cache[ $product_id ] as $pr ) {
+				switch ( $pr ) {
+					case 'product':
+						$meta_key = $is_before ? 'woobt_before_text' : 'woobt_after_text';
+						$text     = get_post_meta( $product_id, $meta_key, true );
+
+						break;
+					case 'rule':
+						static $rule_cache = [];
+
+						if ( ! isset( $rule_cache[ $product_id ] ) ) {
+							$rule_cache[ $product_id ] = self::get_rule( $product_id );
+						}
+
+						if ( ! empty( $rule_cache[ $product_id ] ) ) {
+							$text = $is_before ?
+								( $rule_cache[ $product_id ]['before_text'] ?? '' ) :
+								( $rule_cache[ $product_id ]['after_text'] ?? '' );
+						}
+
+						break;
+					case 'default':
+						static $helper;
+
+						if ( ! isset( $helper ) ) {
+							$helper = WPCleverWoobt_Helper();
+						}
+
+						$text = $is_before ?
+							$helper->localization( 'above_text' ) :
+							$helper->localization( 'under_text' );
+
+						break;
+				}
+
+				if ( ! empty( $text ) ) {
+					break;
+				}
+			}
+
+			return apply_filters( 'woobt_get_text', $text, $product, $context );
 		}
 
 		function is_disable( $product, $context = 'view' ) {

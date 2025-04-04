@@ -3,7 +3,7 @@
 Plugin Name: WPC Frequently Bought Together for WooCommerce
 Plugin URI: https://wpclever.net/
 Description: Increase your sales with personalized product recommendations.
-Version: 7.6.1
+Version: 7.6.2
 Author: WPClever
 Author URI: https://wpclever.net
 Text Domain: woo-bought-together
@@ -17,7 +17,7 @@ WC tested up to: 9.7
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.6.1' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '7.6.2' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
