@@ -776,6 +776,11 @@ table.wp-list-table span.product-type.woobt:before {
     font-weight: 700;
     flex-grow: 1;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    width: 100%;
 }
 
 .woobt_rule_heading .woobt_rule_label span {
@@ -786,6 +791,11 @@ table.wp-list-table span.product-type.woobt:before {
     padding: 4px 8px;
     margin: 0 5px;
     border-radius: 3px;
+    white-space: nowrap;
+}
+
+.woobt_rule_heading .woobt_rule_label .woobt_rule_name {
+    font-weight: 700;
 }
 
 .woobt_rule_heading .woobt_rule_duplicate, .woobt_rule_heading .woobt_rule_remove {

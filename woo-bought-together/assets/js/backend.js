@@ -58,11 +58,7 @@
         $('#woobt_import_export').html('Loading...');
 
         $('#woobt_import_export').dialog({
-            minWidth: 460,
-            title: 'Import/Export',
-            modal: true,
-            dialogClass: 'wpc-dialog',
-            open: function () {
+            minWidth: 460, title: 'Import/Export', modal: true, dialogClass: 'wpc-dialog', open: function () {
                 $('.ui-widget-overlay').bind('click', function () {
                     $('#woobt_import_export').dialog('close');
                 });
@@ -102,11 +98,7 @@
         var title = $('#woobt_search_settings').attr('data-title');
 
         $('#woobt_search_settings').dialog({
-            minWidth: 540,
-            title: title,
-            modal: true,
-            dialogClass: 'wpc-dialog',
-            open: function () {
+            minWidth: 540, title: title, modal: true, dialogClass: 'wpc-dialog', open: function () {
                 $('.ui-widget-overlay').bind('click', function () {
                     $('#woobt_search_settings').dialog('close');
                 });
@@ -137,11 +129,9 @@
         });
     });
 
-    $(document).on('change',
-        'select.woobt_change_price, select.woobt_variations_selector',
-        function () {
-            woobt_options();
-        });
+    $(document).on('change', 'select.woobt_change_price, select.woobt_variations_selector', function () {
+        woobt_options();
+    });
 
     $(document).on('change', 'select.woobt_atc_button', function () {
         woobt_button();
@@ -350,6 +340,17 @@
         }
     });
 
+    $(document).on('change, keyup', '.woobt_rule_name_val', function () {
+        var name = $(this).val();
+        var key = $(this).closest('.woobt_rule').data('key');
+
+        if (name.length) {
+            $(this).closest('.woobt_rule').find('.woobt_rule_name').html(name.replace(/(<([^>]+)>)/ig, ''));
+        } else {
+            $(this).closest('.woobt_rule').find('.woobt_rule_name').html('#' + key);
+        }
+    });
+
     $(document).on('change', '.woobt_source_selector', function () {
         var $this = $(this);
         var type = $this.data('type');
@@ -378,8 +379,7 @@
     });
 
     $(document).on('click touch', '.woobt_rule_heading', function (e) {
-        if ($(e.target).closest('.woobt_rule_remove').length === 0 &&
-            $(e.target).closest('.woobt_rule_duplicate').length === 0) {
+        if ($(e.target).closest('.woobt_rule_remove').length === 0 && $(e.target).closest('.woobt_rule_duplicate').length === 0) {
             $(this).closest('.woobt_rule').toggleClass('open');
         }
     });
@@ -390,11 +390,7 @@
         var name = $(this).data('name');
         var type = $(this).data('type');
         var data = {
-            action: 'woobt_add_combination',
-            nonce: woobt_vars.nonce,
-            key: key,
-            name: name,
-            type: type,
+            action: 'woobt_add_combination', nonce: woobt_vars.nonce, key: key, name: name, type: type,
         };
 
         $.post(ajaxurl, data, function (response) {
@@ -435,10 +431,7 @@
         var rule_data = $rule.find('input, select, button, textarea').serialize() || 0;
         var name = $(this).data('name');
         var data = {
-            action: 'woobt_add_rule',
-            nonce: woobt_vars.nonce,
-            name: name,
-            rule_data: rule_data,
+            action: 'woobt_add_rule', nonce: woobt_vars.nonce, name: name, rule_data: rule_data,
         };
 
         $.post(ajaxurl, data, function (response) {
@@ -491,10 +484,7 @@
                 ajax: {
                     url: ajaxurl, dataType: 'json', delay: 250, data: function (params) {
                         return {
-                            q: params.term,
-                            action: 'woobt_search_term',
-                            taxonomy: apply,
-                            nonce: woobt_vars.nonce,
+                            q: params.term, action: 'woobt_search_term', taxonomy: apply, nonce: woobt_vars.nonce,
                         };
                     }, processResults: function (data) {
                         var options = [];
@@ -552,10 +542,7 @@
                 ajax: {
                     url: ajaxurl, dataType: 'json', delay: 250, data: function (params) {
                         return {
-                            q: params.term,
-                            action: 'woobt_search_term',
-                            taxonomy: taxonomy,
-                            nonce: woobt_vars.nonce,
+                            q: params.term, action: 'woobt_search_term', taxonomy: taxonomy, nonce: woobt_vars.nonce,
                         };
                     }, processResults: function (data) {
                         var options = [];
@@ -613,16 +600,16 @@
             var apply = $rule.find('.woobt_source_selector_apply').find('option:selected').text();
             var get = $rule.find('.woobt_source_selector_get').find('option:selected').text();
 
-            $rule.find('.woobt_rule_label').html('Apply for: ' + apply + ' <span>FBT products: ' + get +
-                '</span>');
+            $rule.find('.woobt_rule_apply').html('Apply for: ' + apply);
+            $rule.find('.woobt_rule_get').html('FBT products: ' + get);
         } else {
             $('.woobt_rule ').each(function () {
                 var $this = $(this);
                 var apply = $this.find('.woobt_source_selector_apply').find('option:selected').text();
                 var get = $this.find('.woobt_source_selector_get').find('option:selected').text();
 
-                $this.find('.woobt_rule_label').html('Apply for: ' + apply + ' <span>FBT products: ' + get +
-                    '</span>');
+                $this.find('.woobt_rule_apply').html('Apply for: ' + apply);
+                $this.find('.woobt_rule_get').html('FBT products: ' + get);
             });
         }
     }

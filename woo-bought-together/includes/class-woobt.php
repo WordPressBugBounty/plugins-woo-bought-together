@@ -980,6 +980,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 				$key = WPCleverWoobt_Helper()->generate_key();
 			}
 
+			$rule_name         = $rule['name'] ?? '';
 			$active            = $rule['active'] ?? 'yes';
 			$apply             = $rule['apply'] ?? 'all';
 			$apply_products    = (array) ( $rule['apply_products'] ?? [] );
@@ -1004,7 +1005,9 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                        value="<?php echo esc_attr( $key ); ?>"/>
                 <div class="woobt_rule_heading">
                     <span class="woobt_rule_move"></span>
-                    <span class="woobt_rule_label"><?php echo esc_html( $apply . ' / ' . $get ); ?></span>
+                    <span class="woobt_rule_label"><span
+                                class="woobt_rule_name"><?php echo esc_html( $rule_name ?: '#' . $key ); ?></span><span
+                                class="woobt_rule_apply"></span><span class="woobt_rule_get"></span></span>
                     <a href="#" class="woobt_rule_duplicate"
                        data-name="<?php echo esc_attr( $name ); ?>"><?php esc_html_e( 'duplicate', 'woo-bought-together' ); ?></a>
                     <a href="#"
@@ -1019,6 +1022,17 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                                     <option value="yes" <?php selected( $active, 'yes' ); ?>><?php esc_html_e( 'Yes', 'woo-bought-together' ); ?></option>
                                     <option value="no" <?php selected( $active, 'no' ); ?>><?php esc_html_e( 'No', 'woo-bought-together' ); ?></option>
                                 </select></label>
+                        </div>
+                    </div>
+                    <div class="woobt_tr">
+                        <div class="woobt_th"><?php esc_html_e( 'Name', 'woo-bought-together' ); ?></div>
+                        <div class="woobt_td woobt_rule_td">
+                            <label>
+                                <input type="text" class="regular-text woobt_rule_name_val"
+                                       name="<?php echo esc_attr( $input_name . '[name]' ); ?>"
+                                       value="<?php echo esc_attr( $rule_name ); ?>"/>
+                            </label>
+                            <span class="description"><?php esc_html_e( 'For management only.', 'woo-bought-together' ); ?></span>
                         </div>
                     </div>
                     <div class="woobt_tr">
@@ -3779,6 +3793,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
 		function get_rule( $product ) {
 			return apply_filters( 'woobt_get_rule', [], $product );
+		}
+
+		function get_rules( $product ) {
+			return apply_filters( 'woobt_get_rules', [], $product );
 		}
 
 		function get_rule_items( $product = null, $context = 'view' ) {
