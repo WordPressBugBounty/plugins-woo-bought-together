@@ -504,12 +504,15 @@
     });
 
     $(document).on('change', '.woobt-checkbox', function () {
-        var $wrap = $(this).closest('.woobt-wrap');
+        var $this = $(this);
+        var $wrap = $this.closest('.woobt-wrap');
         var selection = $wrap.attr('data-selection');
 
         if (selection === 'single') {
             $wrap.find('.woobt-checkbox').not('.woobt-checkbox-this').not(this).prop('checked', false);
         }
+
+        $(document).trigger('woobt_checkbox', [$this]);
 
         woobt_init($wrap);
     });
@@ -898,7 +901,7 @@ function woobt_save_ids($wrap) {
     var pid = $wrap.attr('data-id');
     var $products = $wrap.find('.woobt-products');
     var sync_qty = $products.attr('data-sync-qty');
-    var $ids = jQuery('.woobt-ids-' + pid);
+    var $ids = jQuery('.woobt-ids-' + pid).length ? jQuery('.woobt-ids-' + pid) : $wrap.find('.woobt-ids');
     var items = [];
 
     $products.find('.woobt-product-together').each(function () {

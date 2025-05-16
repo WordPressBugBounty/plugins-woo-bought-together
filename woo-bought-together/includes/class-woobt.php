@@ -1855,7 +1855,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 							WC()->cart->cart_contents[ $cart_item_key ]['woobt_keys'][] = $item_key;
 						}
 					} else {
-						$item_data = $reset_price ? [] : [ 'woobt_new_price' => $item_price ];
+						$item_data = apply_filters( 'woobt_add_to_cart_item_data', $reset_price ? [] : [ 'woobt_new_price' => $item_price ] );
 
 						if ( $sync_qty ) {
 							WC()->cart->add_to_cart( $item_id, $item_qty * $quantity, $item_variation_id, $item_variation, $item_data );
@@ -1915,7 +1915,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			$cart_item_data    = apply_filters( 'woobt_add_to_cart_data', [] );
 			$passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity, $variation_id, $variation );
 
-			if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation ) && 'publish' === $product_status ) {
+			if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation, $cart_item_data ) && 'publish' === $product_status ) {
 				do_action( 'woocommerce_ajax_added_to_cart', $product_id );
 
 				if ( 'yes' === get_option( 'woocommerce_cart_redirect_after_add' ) ) {
@@ -2289,6 +2289,11 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 				] ) . '</span><span class="data">' . ( $product->get_status() === 'private' ? '<span class="info">private</span> ' : '' ) . '<span class="name">' . wp_strip_all_tags( $product->get_name() ) . '</span> <span class="info">' . $product->get_price_html() . '</span></span> <span class="type"><a href="' . get_edit_post_link( $product_id ) . '" target="_blank">' . $product->get_type() . '<br/>#' . $product->get_id() . '</a></span> ' . $remove_btn . '</li>';
 		}
 
+		function product_data_li_deleted( $product_id, $key ) {
+			$hidden_input = '<input type="hidden" name="woobt_ids[' . $key . '][id]" value="' . $product_id . '"/><input type="hidden" name="woobt_ids[' . $key . '][sku]" value=""/>';
+			echo '<li class="woobt-li-product woobt-item" data-id="' . esc_attr( $product_id ) . '">' . $hidden_input . '<span class="woobt-move"></span><span class="data"><span class="name">' . sprintf( esc_html__( 'Product ID %d does not exist.', 'woo-bought-together' ), $product_id ) . '</span></span><span class="woobt-remove hint--left" aria-label="' . esc_html__( 'Remove', 'woo-bought-together' ) . '">×</span></li>';
+		}
+
 		function text_data_li( $data = [], $key = null ) {
 			if ( empty( $key ) || is_numeric( $key ) ) {
 				$key = WPCleverWoobt_Helper()->generate_key();
@@ -2403,10 +2408,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 													$item_product = wc_get_product( $item_id );
 
 													if ( ! $item_product ) {
-														continue;
+														self::product_data_li_deleted( $item_id, $item_key );
+													} else {
+														self::product_data_li( $item_product, $item_price, $item_qty, false, $item_key );
 													}
-
-													self::product_data_li( $item_product, $item_price, $item_qty, false, $item_key );
 												} else {
 													self::text_data_li( $item, $item_key );
 												}
