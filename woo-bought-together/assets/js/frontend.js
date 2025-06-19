@@ -300,9 +300,9 @@
 
                         $.post(woobt_vars.wc_ajax_url.toString().replace('%%endpoint%%', 'woobt_get_variation_items'), data, function (response) {
                             if (response !== '') {
-                                $wrap.html(response);
+                                $wrap.addClass('woobt-wrap-variation').html(response);
                             } else {
-                                $wrap.html($wrap.data('variable'));
+                                $wrap.removeClass('woobt-wrap-variation').html($wrap.data('variable'));
                             }
 
                             $wrap.find('.woobt_variations_form').each(function () {
@@ -312,10 +312,12 @@
                             $wrap.removeClass('woobt-loading');
                         });
                     } else {
-                        $wrap.html($wrap.data('variable'));
-                        $wrap.find('.woobt_variations_form').each(function () {
-                            $(this).wc_variation_form();
-                        });
+                        if ($wrap.hasClass('woobt-wrap-variation')) {
+                            $wrap.removeClass('woobt-wrap-variation').html($wrap.data('variable'));
+                            $wrap.find('.woobt_variations_form').each(function () {
+                                $(this).wc_variation_form();
+                            });
+                        }
                     }
                 }
 
@@ -413,7 +415,7 @@
             atc_button = $wrap.attr('data-atc-button');
 
             if ($wrap.length && ($wrap.data('variable') !== undefined)) {
-                $wrap.html($wrap.data('variable'));
+                $wrap.removeClass('woobt-wrap-variation').html($wrap.data('variable'));
             }
 
             $wrap.find('.woobt_variations_form').each(function () {

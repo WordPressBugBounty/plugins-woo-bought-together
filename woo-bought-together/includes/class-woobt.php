@@ -232,19 +232,26 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			$active_tab = sanitize_key( $_GET['tab'] ?? 'settings' );
 			?>
             <div class="wpclever_settings_page wrap">
-                <h1 class="wpclever_settings_page_title"><?php echo esc_html__( 'WPC Frequently Bought Together', 'woo-bought-together' ) . ' ' . esc_html( WOOBT_VERSION ) . ' ' . ( defined( 'WOOBT_PREMIUM' ) ? '<span class="premium" style="display: none">' . esc_html__( 'Premium', 'woo-bought-together' ) . '</span>' : '' ); ?></h1>
-                <div class="wpclever_settings_page_desc about-text">
-                    <p>
-						<?php printf( /* translators: stars */ esc_html__( 'Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating.', 'woo-bought-together' ), '<span style="color:#ffb900">&#9733;&#9733;&#9733;&#9733;&#9733;</span>' ); ?>
-                        <br/>
-                        <a href="<?php echo esc_url( WOOBT_REVIEWS ); ?>"
-                           target="_blank"><?php esc_html_e( 'Reviews', 'woo-bought-together' ); ?></a> |
-                        <a href="<?php echo esc_url( WOOBT_CHANGELOG ); ?>"
-                           target="_blank"><?php esc_html_e( 'Changelog', 'woo-bought-together' ); ?></a> |
-                        <a href="<?php echo esc_url( WOOBT_DISCUSSION ); ?>"
-                           target="_blank"><?php esc_html_e( 'Discussion', 'woo-bought-together' ); ?></a>
-                    </p>
+                <div class="wpclever_settings_page_header">
+                    <a class="wpclever_settings_page_header_logo" href="https://wpclever.net/"
+                       target="_blank" title="Visit wpclever.net"></a>
+                    <div class="wpclever_settings_page_header_text">
+                        <div class="wpclever_settings_page_title"><?php echo esc_html__( 'WPC Frequently Bought Together', 'woo-bought-together' ) . ' ' . esc_html( WOOBT_VERSION ) . ' ' . ( defined( 'WOOBT_PREMIUM' ) ? '<span class="premium" style="display: none">' . esc_html__( 'Premium', 'woo-bought-together' ) . '</span>' : '' ); ?></div>
+                        <div class="wpclever_settings_page_desc about-text">
+                            <p>
+								<?php printf( /* translators: stars */ esc_html__( 'Thank you for using our plugin! If you are satisfied, please reward it a full five-star %s rating.', 'woo-bought-together' ), '<span style="color:#ffb900">&#9733;&#9733;&#9733;&#9733;&#9733;</span>' ); ?>
+                                <br/>
+                                <a href="<?php echo esc_url( WOOBT_REVIEWS ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Reviews', 'woo-bought-together' ); ?></a> |
+                                <a href="<?php echo esc_url( WOOBT_CHANGELOG ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Changelog', 'woo-bought-together' ); ?></a> |
+                                <a href="<?php echo esc_url( WOOBT_DISCUSSION ); ?>"
+                                   target="_blank"><?php esc_html_e( 'Discussion', 'woo-bought-together' ); ?></a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
+                <h2></h2>
 				<?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) { ?>
                     <div class="notice notice-success is-dismissible">
                         <p><?php esc_html_e( 'Settings updated.', 'woo-bought-together' ); ?></p>
@@ -2268,7 +2275,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			$product_class .= ! $product->is_in_stock() ? ' out-of-stock' : '';
 			$product_class .= ! in_array( $product->get_type(), self::$types, true ) ? ' disabled' : '';
 
-			if ( class_exists( 'WPCleverWoopq' ) && ( get_option( '_woopq_decimal', 'no' ) === 'yes' ) ) {
+			if ( class_exists( 'WPCleverWoopq' ) && ( WPCleverWoopq::get_setting( 'decimal', 'no' ) === 'yes' ) ) {
 				$step = '0.000001';
 			} else {
 				$step = '1';
@@ -3626,10 +3633,12 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
 				echo '<div class="' . esc_attr( apply_filters( 'woobt_item_text_class', $item_class, $item, $product_id ) ) . '" data-key="' . esc_attr( $item_key ) . '">';
 
+				$item_text = apply_filters( 'woobt_item_text', do_shortcode( str_replace( '[woobt', '[_woobt', $item['text'] ) ), $item, $product_id );
+
 				if ( empty( $item['type'] ) || ( $item['type'] === 'none' ) ) {
-					echo $item['text'];
+					echo wp_kses_post( $item_text );
 				} else {
-					echo '<' . $item['type'] . '>' . $item['text'] . '</' . $item['type'] . '>';
+					echo '<' . $item['type'] . '>' . wp_kses_post( $item_text ) . '</' . $item['type'] . '>';
 				}
 
 				echo '</div>';
