@@ -3,8 +3,8 @@ Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, upsells, related, bought together
 Tested up to: 6.8
-Version: 7.6.5
-Stable tag: 7.6.5
+Version: 7.6.6
+Stable tag: 7.6.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,9 @@ Please try other plugins from us:
 4. When adding/editing the product you can choose "Bought Together" tab then add some products with the new price
 
 == Changelog ==
+
+= 7.6.6 =
+* Added: Sortable for products in Smart Rules
 
 = 7.6.5 =
 * Fixed: Minor CSS/JS issues in the backend

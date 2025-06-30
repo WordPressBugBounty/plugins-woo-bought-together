@@ -1158,7 +1158,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                     <label>
                         <select class="wc-product-search woobt-product-search"
                                 name="<?php echo esc_attr( $input_name . '[' . $type . '_products][]' ); ?>"
-                                multiple="multiple"
+                                multiple="multiple" data-sortable="1"
                                 data-placeholder="<?php esc_attr_e( 'Search for a product&hellip;', 'woo-bought-together' ); ?>"
                                 data-action="woocommerce_json_search_products_and_variations">
 							<?php
