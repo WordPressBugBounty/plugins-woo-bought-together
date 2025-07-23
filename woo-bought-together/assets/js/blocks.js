@@ -1,4 +1,4 @@
-const {registerCheckoutFilters} = window.wc.blocksCheckout;
+const woobtCheckoutFilters = window.wc.blocksCheckout.registerCheckoutFilters;
 
 const woobtCartItemClass = (defaultValue, extensions, args) => {
     const isCartContext = args?.context === 'cart';
@@ -18,7 +18,7 @@ const woobtCartItemClass = (defaultValue, extensions, args) => {
     return defaultValue;
 };
 
-registerCheckoutFilters('woobt-blocks', {
+woobtCheckoutFilters('woobt-blocks', {
     cartItemClass: woobtCartItemClass,
 });
 

@@ -7,6 +7,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 		protected static $image_size = 'woocommerce_thumbnail';
 		protected static $localization = [];
 		protected static $positions = [];
+		protected static $priorities = [];
 		protected static $settings = [];
 		protected static $rules = [];
 		protected static $types = [
@@ -67,18 +68,6 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
 			// Add to cart button & form
 			add_action( 'woocommerce_before_add_to_cart_button', [ $this, 'add_to_cart_button' ] );
-
-			// Show items in standard position
-			add_action( 'woocommerce_before_add_to_cart_form', [ $this, 'show_items_before_atc' ] );
-			add_action( 'woocommerce_after_add_to_cart_form', [ $this, 'show_items_after_atc' ] );
-			add_action( 'woocommerce_single_product_summary', [ $this, 'show_items_below_title' ], 6 );
-			add_action( 'woocommerce_single_product_summary', [ $this, 'show_items_below_price' ], 11 );
-			add_action( 'woocommerce_single_product_summary', [ $this, 'show_items_below_excerpt' ], 21 );
-			add_action( 'woocommerce_single_product_summary', [ $this, 'show_items_below_meta' ], 41 );
-			add_action( 'woocommerce_after_single_product_summary', [ $this, 'show_items_below_summary' ], 9 );
-
-			// Show items in custom position
-			add_action( 'woobt_custom_position', [ $this, 'show_items_position' ] );
 
 			// Add to cart
 			add_filter( 'woocommerce_add_to_cart_sold_individually_found_in_cart', [
@@ -174,15 +163,69 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			self::$types      = (array) apply_filters( 'woobt_product_types', self::$types );
 			self::$image_size = apply_filters( 'woobt_image_size', self::$image_size );
 			self::$positions  = apply_filters( 'woobt_positions', [
-				'before'        => esc_html__( 'Above add to cart button', 'woo-bought-together' ),
-				'after'         => esc_html__( 'Under add to cart button', 'woo-bought-together' ),
+				'before'        => esc_html__( 'Above add to cart form', 'woo-bought-together' ),
+				'after'         => esc_html__( 'Under add to cart form', 'woo-bought-together' ),
+				'before_button' => esc_html__( 'Above add to cart button', 'woo-bought-together' ),
+				'after_button'  => esc_html__( 'Under add to cart button', 'woo-bought-together' ),
 				'below_title'   => esc_html__( 'Under the title', 'woo-bought-together' ),
 				'below_price'   => esc_html__( 'Under the price', 'woo-bought-together' ),
 				'below_excerpt' => esc_html__( 'Under the excerpt', 'woo-bought-together' ),
 				'below_meta'    => esc_html__( 'Under the meta', 'woo-bought-together' ),
 				'below_summary' => esc_html__( 'Under summary', 'woo-bought-together' ),
-				'none'          => esc_html__( 'None (hide it)', 'woo-bought-together' ),
+				'none'          => esc_html__( 'None (hide it)', 'woo-bought-together' )
 			] );
+			self::$priorities = apply_filters( 'woobt_priorities', [
+				'before'        => 10,
+				'after'         => 10,
+				'before_button' => 10,
+				'after_button'  => 10,
+				'below_title'   => 6,
+				'below_price'   => 11,
+				'below_excerpt' => 21,
+				'below_meta'    => 41,
+				'below_summary' => 10
+			] );
+
+			// Show items in standard position
+			add_action( 'woocommerce_before_add_to_cart_form', [
+				$this,
+				'show_items_before_atc'
+			], absint( self::$priorities['before'] ?? 10 ) );
+			add_action( 'woocommerce_after_add_to_cart_form', [
+				$this,
+				'show_items_after_atc'
+			], absint( self::$priorities['after'] ?? 10 ) );
+			add_action( 'woocommerce_before_add_to_cart_button', [
+				$this,
+				'show_items_before_atc_button'
+			], absint( self::$priorities['before_button'] ?? 10 ) );
+			add_action( 'woocommerce_before_add_to_cart_button', [
+				$this,
+				'show_items_after_atc_button'
+			], absint( self::$priorities['after_button'] ?? 10 ) );
+			add_action( 'woocommerce_single_product_summary', [
+				$this,
+				'show_items_below_title'
+			], absint( self::$priorities['below_title'] ?? 6 ) );
+			add_action( 'woocommerce_single_product_summary', [
+				$this,
+				'show_items_below_price'
+			], absint( self::$priorities['below_price'] ?? 11 ) );
+			add_action( 'woocommerce_single_product_summary', [
+				$this,
+				'show_items_below_excerpt'
+			], absint( self::$priorities['below_excerpt'] ?? 21 ) );
+			add_action( 'woocommerce_single_product_summary', [
+				$this,
+				'show_items_below_meta'
+			], absint( self::$priorities['below_meta'] ?? 41 ) );
+			add_action( 'woocommerce_after_single_product_summary', [
+				$this,
+				'show_items_below_summary'
+			], absint( self::$priorities['below_summary'] ?? 10 ) );
+
+			// Show items in custom position
+			add_action( 'woobt_custom_position', [ $this, 'show_items_position' ] );
 		}
 
 		function available_variation( $data, $variable, $variation ) {
@@ -1110,7 +1153,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                                 data-type="<?php echo esc_attr( $type ); ?>"
                                 name="<?php echo esc_attr( $input_name . '[' . $type . ']' ); ?>">
                             <option value="all"><?php esc_html_e( 'All products', 'woo-bought-together' ); ?></option>
-                            <option value="products" <?php selected( $apply, 'products' ); ?>><?php esc_html_e( 'Products', 'woo-bought-together' ); ?></option>
+                            <option value="products" <?php selected( $apply, 'products' ); ?>><?php esc_html_e( 'Selected products', 'woo-bought-together' ); ?></option>
                             <option value="combination" <?php selected( $apply, 'combination' ); ?>><?php esc_html_e( 'Combined', 'woo-bought-together' ); ?></option>
 							<?php
 							$taxonomies = get_object_taxonomies( 'product', 'objects' );
@@ -2773,6 +2816,14 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			self::show_items_position( 'after' );
 		}
 
+		function show_items_before_atc_button() {
+			self::show_items_position( 'before_button' );
+		}
+
+		function show_items_after_atc_button() {
+			self::show_items_position( 'after_button' );
+		}
+
 		function show_items_below_title() {
 			self::show_items_position( 'below_title' );
 		}
@@ -3213,7 +3264,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 										}
 									}
 
-									echo '<div class="woobt-availability">' . wc_get_stock_html( $product ) . '</div>';
+									echo '<div class="woobt-availability">' . apply_filters( 'woobt_product_availability', ! $product->is_type( 'variable' ) ? wc_get_stock_html( $product ) : '', $product ) . '</div>';
 									?>
                                 </div>
 
@@ -3450,7 +3501,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 										echo '<div class="woobt-description">' . apply_filters( 'woobt_product_short_description', $product->is_type( 'variation' ) ? $product->get_description() : $product->get_short_description(), $product ) . '</div>';
 									}
 
-									echo '<div class="woobt-availability">' . apply_filters( 'woobt_product_availability', wc_get_stock_html( $product ), $product ) . '</div>';
+									echo '<div class="woobt-availability">' . apply_filters( 'woobt_product_availability', ! $product->is_type( 'variable' ) ? wc_get_stock_html( $product ) : '', $product ) . '</div>';
 									?>
                                 </div>
 
