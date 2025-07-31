@@ -171,6 +171,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 				'below_price'   => esc_html__( 'Under the price', 'woo-bought-together' ),
 				'below_excerpt' => esc_html__( 'Under the excerpt', 'woo-bought-together' ),
 				'below_meta'    => esc_html__( 'Under the meta', 'woo-bought-together' ),
+				'above_summary' => esc_html__( 'Above summary', 'woo-bought-together' ),
 				'below_summary' => esc_html__( 'Under summary', 'woo-bought-together' ),
 				'none'          => esc_html__( 'None (hide it)', 'woo-bought-together' )
 			] );
@@ -183,7 +184,8 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 				'below_price'   => 11,
 				'below_excerpt' => 21,
 				'below_meta'    => 41,
-				'below_summary' => 10
+				'above_summary' => 9,
+				'below_summary' => 21
 			] );
 
 			// Show items in standard position
@@ -221,8 +223,12 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 			], absint( self::$priorities['below_meta'] ?? 41 ) );
 			add_action( 'woocommerce_after_single_product_summary', [
 				$this,
+				'show_items_above_summary'
+			], absint( self::$priorities['above_summary'] ?? 9 ) );
+			add_action( 'woocommerce_after_single_product_summary', [
+				$this,
 				'show_items_below_summary'
-			], absint( self::$priorities['below_summary'] ?? 10 ) );
+			], absint( self::$priorities['below_summary'] ?? 21 ) );
 
 			// Show items in custom position
 			add_action( 'woobt_custom_position', [ $this, 'show_items_position' ] );
@@ -2838,6 +2844,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
 		function show_items_below_meta() {
 			self::show_items_position( 'below_meta' );
+		}
+
+		function show_items_above_summary() {
+			self::show_items_position( 'above_summary' );
 		}
 
 		function show_items_below_summary() {
