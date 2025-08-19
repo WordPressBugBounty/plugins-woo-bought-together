@@ -1524,7 +1524,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 					'price_thousand_separator' => wc_get_price_thousand_separator(),
 					'price_decimal_separator'  => wc_get_price_decimal_separator(),
 					'currency_symbol'          => get_woocommerce_currency_symbol(),
-					'trim_zeros'               => apply_filters( 'woocommerce_price_trim_zeros', false ),
+					'trim_zeros'               => apply_filters( 'woobt_price_trim_zeros', apply_filters( 'woocommerce_price_trim_zeros', false ) ),
 					'additional_price_text'    => WPCleverWoobt_Helper()->localization( 'additional', esc_html__( 'Additional price:', 'woo-bought-together' ) ),
 					'total_price_text'         => WPCleverWoobt_Helper()->localization( 'total', esc_html__( 'Total:', 'woo-bought-together' ) ),
 					'add_to_cart'              => WPCleverWoobt_Helper()->get_setting( 'atc_button', 'main' ) === 'main' ? WPCleverWoobt_Helper()->localization( 'add_to_cart', esc_html__( 'Add to cart', 'woo-bought-together' ) ) : WPCleverWoobt_Helper()->localization( 'add_all_to_cart', esc_html__( 'Add all to cart', 'woo-bought-together' ) ),
@@ -3004,7 +3004,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 				foreach ( $items as $key => $item ) {
 					if ( is_array( $item ) ) {
 						if ( ! empty( $item['id'] ) ) {
-							$_item['id']    = $item['id'];
+							$_item['id']    = apply_filters( 'woobt_item_id', $item['id'], $item, $product_id );
 							$_item['price'] = $item['price'];
 							$_item['qty']   = $item['qty'];
 						} else {
@@ -3013,7 +3013,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 						}
 					} else {
 						// make it works with upsells/cross-sells/related
-						$_item['id']    = absint( $item );
+						$_item['id']    = apply_filters( 'woobt_item_id', absint( $item ), $item, $product_id );
 						$_item['price'] = WPCleverWoobt_Helper()->get_setting( 'default_price', '100%' );
 						$_item['qty']   = 1;
 					}
@@ -3046,7 +3046,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 				$after_text  = apply_filters( 'woobt_after_text', self::get_text( $product, 'after' ), $product_id );
 
 				// show items
-				do_action( 'woobt_wrap_before', $product );
+				do_action( 'woobt_wrap_before', $product, $items );
 
 				if ( ! empty( $before_text ) ) {
 					do_action( 'woobt_before_text_above', $product );
@@ -3118,7 +3118,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 					'discount'             => $discount,
 				], $product );
 
-				do_action( 'woobt_products_above', $product );
+				do_action( 'woobt_products_above', $product, $items );
 				?>
                 <div class="<?php echo esc_attr( $products_class ); ?>" <?php echo WPCleverWoobt_Helper()->data_attributes( $products_attrs ); ?>>
 					<?php
@@ -3628,19 +3628,19 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 					?>
                 </div><!-- /woobt-products -->
 				<?php
-				do_action( 'woobt_products_below', $product );
+				do_action( 'woobt_products_below', $product, $items );
 
-				do_action( 'woobt_summary_above', $product );
+				do_action( 'woobt_summary_above', $product, $items );
 
 				echo '<div class="woobt-summary">';
 
 				echo '<div class="woobt-additional woobt-text"></div>';
 
-				do_action( 'woobt_total_above', $product );
+				do_action( 'woobt_total_above', $product, $items );
 
 				echo '<div class="woobt-total woobt-text"></div>';
 
-				do_action( 'woobt_alert_above', $product );
+				do_action( 'woobt_alert_above', $product, $items );
 
 				echo '<div class="woobt-alert woobt-text"></div>';
 
@@ -3662,7 +3662,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
 				echo '</div><!-- /woobt-summary -->';
 
-				do_action( 'woobt_summary_below', $product );
+				do_action( 'woobt_summary_below', $product, $items );
 
 				if ( $layout === 'compact' ) {
 					echo '</div><!-- /woobt-inner -->';
@@ -3674,7 +3674,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 					do_action( 'woobt_after_text_below', $product );
 				}
 
-				do_action( 'woobt_wrap_after', $product );
+				do_action( 'woobt_wrap_after', $product, $items );
 			}
 
 			if ( ! $is_variation ) {
