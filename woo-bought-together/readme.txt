@@ -3,16 +3,16 @@ Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, upsells, related, bought together
 Tested up to: 6.8
-Version: 7.6.9
-Stable tag: 7.6.9
+Version: 7.7.0
+Stable tag: 7.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-WPC Frequently Bought Together help you increase your sales with personalized product recommendations.
+WPC Frequently Bought Together helps you increase your sales with personalized product recommendations.
 
 == Description ==
 
-**WPC Frequently Bought Together for WooCommerce** is a highly effective plugin developed for assisting online businesses in improving sales and profits through the cross-selling marketing strategy. Particularly, offers are given as bought-together suggestions at the bottom of the single product description page.
+**WPC Frequently Bought Together for WooCommerce** is a highly effective plugin developed for assisting online businesses in improving sales and profits through the cross-selling marketing strategy. Particularly, offers are given as buy-together suggestions at the bottom of the single product description page.
 
 = Live demo =
 
@@ -48,11 +48,11 @@ https://www.youtube.com/watch?v=FpOS16IH3fg
 
 Technically, this plugin offers a way for shop owners to get all related products together and put them in a deal for an irresistible price. This acts as a great reminder for customers to consider things that they might need to buy alongside the currently being viewed product. Consider the following cases when you need a WPC Frequently Bought Together plugin:
 
-- Give a suggestion to buy a charger alongside with a laptop or computer for 10% off.
-- Suggest a suitable jeans and a pair of shoes that fit well with the beautiful shirt being considered. Buyers can get all three items with $20 off.
+- Give a suggestion to buy a charger alongside a laptop or computer for 10% off.
+- Suggest a suitable jean and a pair of shoes that fit well with the beautiful shirt being considered. Buyers can get all three items with $20 off.
 - Invite customers to buy two more pieces of jewelry from the same collection.
 - Combine three products from three different collections and give a 15% discount.
-- Allow customers to buy various pattern designs of the same variable product in a deal. (Users must enable Allow same products in the Bought Together settings in order to do this).
+- Allow customers to buy various pattern designs of the same variable product in a deal. (Users must enable to Allow same products in the Bought Together settings to do this).
 - Create a complex deal with additional items’ quantities and prices are adjusted differently. For example, a deal with 3 additional items: item 1 - quantity= 1 & 90% price, item 2 - quantity=2 & 80% price, item 3 - quantity=3 & 75% price. And finally, you put the main product’s price at 20% off. It’s totally possible. See this screenshot http://prntscr.com/piohqc or visit this product on our demo site for your reference. Even the most complicated deal can be easily handled with WPC Frequently Bought Together.
 
 = Not what you needed? =
@@ -69,10 +69,14 @@ Please try other plugins from us:
 
 1. Please make sure that you installed WooCommerce
 2. Go to plugins in your dashboard and select "Add New"
-3. Search for "WPC Frequently Bought Together", Install & Activate it
-4. When adding/editing the product you can choose "Bought Together" tab then add some products with the new price
+3. Search for "WPC Frequently Bought Together," Install & Activate it
+4. When adding/editing the product, you can choose the "Bought Together" tab, then add some products with the new price
 
 == Changelog ==
+
+= 7.7.0 =
+* Fixed: Minor CSS/JS issues in the backend
+* Updated: Compatible with WP 6.8 & Woo 10.2
 
 = 7.6.9 =
 * Added: Filter hook 'woobt_price_trim_zeros' & 'woobt_item_id'
@@ -167,7 +171,7 @@ Please try other plugins from us:
 * Fixed: Don't display draft products by default
 
 = 7.1.8 =
-* Added: Option to select products that have same attribute with the main product
+* Added: Option to select products that have the same attribute with the main product
 
 = 7.1.7 =
 * Fixed: Minor CSS/JS issues
