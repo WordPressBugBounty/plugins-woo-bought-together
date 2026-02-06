@@ -2,9 +2,9 @@
 Contributors: wpclever
 Donate link: https://wpclever.net
 Tags: woocommerce, wpc, upsells, related, bought together
-Tested up to: 6.8
-Version: 7.7.0
-Stable tag: 7.7.0
+Tested up to: 6.9
+Version: 7.7.5
+Stable tag: 7.7.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,22 @@ Please try other plugins from us:
 4. When adding/editing the product, you can choose the "Bought Together" tab, then add some products with the new price
 
 == Changelog ==
+
+= 7.7.5 =
+* Added: Option to ignore on-sale products when calculating FBT sale prices and discounts
+
+= 7.7.4 =
+* Fixed: Missing attribute with variable product
+
+= 7.7.3 =
+* Updated: Optimized the code
+
+= 7.7.2 =
+* Added: Import/export settings and rules
+* Updated: Compatible with WP 6.8 & Woo 10.3
+
+= 7.7.1 =
+* Fixed: Minor CSS/JS issues on the "Separate images" layout
 
 = 7.7.0 =
 * Fixed: Minor CSS/JS issues in the backend

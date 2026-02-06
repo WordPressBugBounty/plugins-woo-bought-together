@@ -47,16 +47,12 @@
                 $product.attr('data-regular-price', regular_price);
 
                 // change image
-                if (woobt_image !== undefined && woobt_image !== '') {
-                    var $img = $wrap.find('.woobt-img-order-' + order);
+                var $img = $wrap.find('.woobt-img-order-' + order);
 
-                    if ($img.length) {
+                if ($img.length) {
+                    if (woobt_image !== undefined && woobt_image !== '') {
                         $img.html(woobt_image);
-                    }
-                } else {
-                    var $img = $wrap.find('.woobt-img-order-' + order);
-
-                    if ($img.length) {
+                    } else {
                         $img.html($img.attr('data-img'));
                     }
                 }
@@ -255,16 +251,12 @@
             }
 
             // change image
-            if (t['woobt_image'] !== undefined && t['woobt_image'] !== '') {
-                var $img = $wrap.find('.woobt-img-order-' + order);
+            var $img = $wrap.find('.woobt-img-order-' + order);
 
-                if ($img.length) {
+            if ($img.length) {
+                if (t['woobt_image'] !== undefined && t['woobt_image'] !== '') {
                     $img.html(t['woobt_image']);
-                }
-            } else {
-                var $img = $wrap.find('.woobt-img-order-' + order);
-
-                if ($img.length) {
+                } else {
                     $img.html($img.attr('data-img'));
                 }
             }
@@ -345,16 +337,12 @@
                         }
 
                         // change this image
-                        if (t['woobt_image'] !== undefined && t['woobt_image'] !== '') {
-                            var $img_0 = $wrap.find('.woobt-img-order-0');
+                        var $img_0 = $wrap.find('.woobt-img-order-0');
 
-                            if ($img_0.length) {
+                        if ($img_0.length) {
+                            if (t['woobt_image'] !== undefined && t['woobt_image'] !== '') {
                                 $img_0.html(t['woobt_image']);
-                            }
-                        } else {
-                            var $img_0 = $wrap.find('.woobt-img-order-0');
-
-                            if ($img_0.length) {
+                            } else {
                                 $img_0.html($img_0.attr('data-img'));
                             }
                         }
@@ -722,24 +710,17 @@ function woobt_check_ready($wrap) {
             return true;
         }
 
-        var $images = $this.closest('.woobt-wrap').find('.woobt-images');
-        var _checked = $this.find('.woobt-checkbox').prop('checked');
         var _id = parseInt($this.attr('data-id'));
         var _qty = parseInt($this.attr('data-qty'));
         var _order = parseInt($this.attr('data-order'));
+        var _checked = $this.find('.woobt-checkbox').prop('checked');
 
         if (!_checked) {
             $this.addClass('woobt-hide');
-
-            if ($images.length) {
-                $images.find('.woobt-image-order-' + _order).addClass('woobt-image-hide');
-            }
+            $wrap.find('.woobt-image-order-' + _order).addClass('woobt-image-hide');
         } else {
             $this.removeClass('woobt-hide');
-
-            if ($images.length) {
-                $images.find('.woobt-image-order-' + _order).removeClass('woobt-image-hide');
-            }
+            $wrap.find('.woobt-image-order-' + _order).removeClass('woobt-image-hide');
         }
 
         if (_checked && (_id === 0) && (_qty > 0)) {

@@ -377,13 +377,9 @@
 .woobt-product .woobt-quantity-input .qty, .woobt-product .woobt-quantity-input .woobt-qty {
   width: 100%;
   min-width: 40px;
-}
-
-.woobt-quantity-input .qty, .woobt-quantity-input .woobt-qty {
-  width: 100%;
-  min-width: 40px;
   height: 40px;
   line-height: 38px;
+  margin: 0;
   padding: 0 10px;
   box-shadow: none;
   border-width: 1px 0;
