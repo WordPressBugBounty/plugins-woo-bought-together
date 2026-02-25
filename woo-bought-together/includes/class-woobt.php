@@ -2192,12 +2192,12 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             foreach ( $cart->cart_contents as $cart_item_key => $cart_item ) {
                 // remove orphaned products
                 if ( isset( $cart_item['woobt_parent_key'] ) && ( $parent_key = $cart_item['woobt_parent_key'] ) && ! isset( $cart->cart_contents[ $parent_key ] ) ) {
-                    $cart->remove_cart_item( $cart_item_key );
+                    WC()->cart->remove_cart_item( $cart_item_key );
                 }
 
                 // remove associated products first
                 if ( isset( $cart_item['woobt_order_again'], $cart_item['woobt_parent_id'] ) ) {
-                    $cart->remove_cart_item( $cart_item_key );
+                    WC()->cart->remove_cart_item( $cart_item_key );
                 }
             }
 
