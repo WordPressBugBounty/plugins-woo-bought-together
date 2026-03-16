@@ -39,6 +39,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             // Settings
             add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
             add_action( 'admin_init', [ $this, 'register_settings' ] );
+            add_filter( 'pre_update_option', [ $this, 'last_saved' ], 10, 2 );
             add_action( 'admin_menu', [ $this, 'admin_menu' ] );
             add_action( 'wp_ajax_woobt_update_search_settings', [ $this, 'ajax_update_search_settings' ] );
             add_action( 'wp_ajax_woobt_get_search_results', [ $this, 'ajax_get_search_results' ] );
@@ -271,6 +272,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             ] );
 
             // rules
+            register_setting( 'woobt_rules', 'woobt_rules_settings', [
+                    'type'              => 'array',
+                    'sanitize_callback' => [ 'WPCleverWoobt_Helper', 'sanitize_array' ],
+            ] );
             register_setting( 'woobt_rules', 'woobt_rules', [
                     'type'              => 'array',
                     'sanitize_callback' => [ 'WPCleverWoobt_Helper', 'sanitize_array' ],
@@ -281,6 +286,15 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                     'type'              => 'array',
                     'sanitize_callback' => [ 'WPCleverWoobt_Helper', 'sanitize_array' ],
             ] );
+        }
+
+        function last_saved( $value, $option ) {
+            if ( $option == 'woobt_settings' || $option == 'woobt_rules_settings' || $option == 'woobt_localization' ) {
+                $value['_last_saved']    = current_time( 'timestamp' );
+                $value['_last_saved_by'] = get_current_user_id();
+            }
+
+            return $value;
         }
 
         function admin_menu() {
@@ -726,7 +740,16 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                                 <?php self::search_settings(); ?>
                                 <tr class="submit">
                                     <th colspan="2">
-                                        <?php settings_fields( 'woobt_settings' ); ?><?php submit_button(); ?>
+                                        <div class="wpclever_submit">
+                                            <?php
+                                            settings_fields( 'woobt_settings' );
+                                            submit_button( '', 'primary', 'submit', false );
+
+                                            if ( function_exists( 'wpc_last_saved' ) ) {
+                                                wpc_last_saved( WPCleverWoobt_Helper()->get_settings() );
+                                            }
+                                            ?>
+                                        </div>
                                         <a style="display: none;" class="wpclever_export" data-key="woobt_settings"
                                            data-name="settings"
                                            href="#"><?php esc_html_e( 'import / export', 'woo-bought-together' ); ?></a>
@@ -1051,7 +1074,18 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                     </tr>
                     <tr class="submit">
                         <th colspan="2">
-                            <?php settings_fields( $name ); ?><?php submit_button(); ?>
+                            <div class="wpclever_submit">
+                                <?php
+                                $log = $name . '_settings';
+                                echo '<input type="hidden" name="' . $log . '[version]" value="' . esc_attr( WOOBT_VERSION ) . '"/>';
+                                settings_fields( $name );
+                                submit_button( '', 'primary', 'submit', false );
+
+                                if ( function_exists( 'wpc_last_saved' ) ) {
+                                    wpc_last_saved( get_option( $log, [] ) );
+                                }
+                                ?>
+                            </div>
                             <a style="display: none;" class="wpclever_export" data-key="woobt_rules" data-name="rules"
                                href="#"><?php esc_html_e( 'import / export', 'woo-bought-together' ); ?></a>
                         </th>
