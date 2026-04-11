@@ -49,6 +49,7 @@
     min-height: 200px;
     z-index: 9999999;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .woobt_selected {

@@ -302,6 +302,7 @@
                             });
 
                             $wrap.removeClass('woobt-loading');
+                            $(document).trigger('woobt_loaded_variation_items', [$wrap]);
                         });
                     } else {
                         if ($wrap.hasClass('woobt-wrap-variation')) {
