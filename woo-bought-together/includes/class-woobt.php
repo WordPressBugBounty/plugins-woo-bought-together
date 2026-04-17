@@ -209,8 +209,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
         function enqueue_scripts() {
             // carousel
-            wp_enqueue_style( 'slick', WOOBT_URI . 'assets/slick/slick.css' );
-            wp_enqueue_script( 'slick', WOOBT_URI . 'assets/slick/slick.min.js', [ 'jquery' ], WOOBT_VERSION, true );
+            if ( apply_filters( 'woobt_carousel', true ) ) {
+                wp_enqueue_style( 'slick', WOOBT_URI . 'assets/slick/slick.css' );
+                wp_enqueue_script( 'slick', WOOBT_URI . 'assets/slick/slick.min.js', [ 'jquery' ], WOOBT_VERSION, true );
+            }
 
             wp_enqueue_style( 'woobt-frontend', WOOBT_URI . 'assets/css/frontend.css', [], WOOBT_VERSION );
             wp_enqueue_script( 'woobt-frontend', WOOBT_URI . 'assets/js/frontend.js', [ 'jquery' ], WOOBT_VERSION, true );
@@ -2002,7 +2004,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                             $ids     = array_diff( $ids, $all_ids );
                             $all_ids = array_merge( $all_ids, $ids );
 
-                            if ( ! empty( $ids ) && is_array( $ids ) ) {
+                            if ( ! empty( $ids ) ) {
                                 foreach ( $ids as $k => $id ) {
                                     $item_key           = 'rl' . $k . '-' . $key;
                                     $items[ $item_key ] = [
