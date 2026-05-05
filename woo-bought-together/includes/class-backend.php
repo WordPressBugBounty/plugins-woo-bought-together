@@ -1701,7 +1701,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                                 <div id="woobt_selected" class="woobt_selected">
                                     <ul>
                                         <?php
-                                        if ( $items = WPCleverWoobt::instance()->get_product_items( $product_id ) ) {
+                                        if ( $items = WPCleverWoobt::instance()->get_product_items( $product_id, 'edit' ) ) {
                                             foreach ( $items as $item_key => $item ) {
                                                 if ( ! empty( $item['id'] ) ) {
                                                     $item_id      = $item['id'];
@@ -1908,6 +1908,10 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             } else {
                 delete_post_meta( $post_id, 'woobt_ids' );
             }
+
+            // Invalidate product items cache
+            wp_cache_delete( 'woobt_items_' . $post_id . '_view', 'woobt' );
+            wp_cache_delete( 'woobt_items_' . $post_id . '_validate', 'woobt' );
 
             if ( isset( $_POST['woobt_discount'] ) ) {
                 update_post_meta( $post_id, 'woobt_discount', sanitize_text_field( $_POST['woobt_discount'] ) );

@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.8.1\n"
+"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.8.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-bought-together\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-04-17T10:00:43+00:00\n"
+"POT-Creation-Date: 2026-05-05T09:25:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woo-bought-together\n"
@@ -493,7 +493,7 @@ msgid "This item"
 msgstr ""
 
 #: includes/class-backend.php:558
-#: includes/class-woobt.php:1225
+#: includes/class-woobt.php:1229
 msgid "This item:"
 msgstr ""
 
@@ -503,8 +503,8 @@ msgstr ""
 
 #. translators: attribute name
 #: includes/class-backend.php:570
-#: includes/class-woobt.php:1278
-#: includes/class-woobt.php:1304
+#: includes/class-woobt.php:1282
+#: includes/class-woobt.php:1308
 #, php-format
 msgid "Choose %s"
 msgstr ""
@@ -517,7 +517,7 @@ msgstr ""
 
 #: includes/class-backend.php:577
 #: includes/class-backend.php:583
-#: includes/class-woobt.php:1314
+#: includes/class-woobt.php:1318
 msgid "Clear"
 msgstr ""
 
@@ -567,7 +567,7 @@ msgstr ""
 #: includes/class-backend.php:634
 #: includes/class-backend.php:640
 #: includes/class-woobt.php:236
-#: includes/class-woobt.php:1720
+#: includes/class-woobt.php:1724
 msgid "Add all to cart"
 msgstr ""
 
@@ -992,15 +992,15 @@ msgstr ""
 msgid "Unset (default setting)"
 msgstr ""
 
-#: includes/class-backend.php:2048
+#: includes/class-backend.php:2052
 msgid "Bought together"
 msgstr ""
 
-#: includes/class-backend.php:2049
+#: includes/class-backend.php:2053
 msgid "With associated products"
 msgstr ""
 
-#: includes/class-backend.php:2050
+#: includes/class-backend.php:2054
 msgid "Without associated products"
 msgstr ""
 

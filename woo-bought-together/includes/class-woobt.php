@@ -931,12 +931,12 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
             ob_start();
 
-            self::show_items( $attrs['id'], wc_string_to_bool( $attrs['custom_position'] ) );
+            self::show_items( $attrs['id'], wc_string_to_bool( $attrs['custom_position'] ), false, 'shortcode' );
 
             return ob_get_clean();
         }
 
-        function show_items( $product = null, $custom_position = false, $is_variation = false ) {
+        function show_items( $product = null, $custom_position = false, $is_variation = false, $context = '' ) {
             $product_id = 0;
 
             if ( ! $product ) {
@@ -992,6 +992,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
             if ( ! $is_variation ) {
                 $wrap_class = 'woobt-wrap woobt-layout-' . esc_attr( $layout ) . ' woobt-wrap-' . esc_attr( $product_id ) . ' ' . ( WPCleverWoobt_Helper()->get_setting( 'responsive', 'yes' ) === 'yes' ? 'woobt-wrap-responsive' : '' );
+
+                if ( ! empty( $context ) ) {
+                    $wrap_class .= ' ' . sanitize_title( 'woobt-wrap-' . $context );
+                }
 
                 if ( $custom_position ) {
                     $wrap_class .= ' woobt-wrap-custom-position';
@@ -1804,19 +1808,22 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             }
 
             static $cache = [];
-            $cache_key = $product_id . '_' . $context;
-
-            if ( isset( $cache[ $cache_key ] ) ) {
-                return apply_filters( 'woobt_get_product_items', $cache[ $cache_key ], $product, $context );
-            }
-
+            $cache_key     = $product_id . '_' . $context;
             $transient_key = 'woobt_items_' . $cache_key;
-            $items         = wp_cache_get( $transient_key, 'woobt' );
 
-            if ( false !== $items ) {
-                $cache[ $cache_key ] = $items;
+            // Skip cache for edit context to always get fresh data
+            if ( $context !== 'edit' ) {
+                if ( isset( $cache[ $cache_key ] ) ) {
+                    return apply_filters( 'woobt_get_product_items', $cache[ $cache_key ], $product, $context );
+                }
 
-                return apply_filters( 'woobt_get_product_items', $items, $product, $context );
+                $items = wp_cache_get( $transient_key, 'woobt' );
+
+                if ( false !== $items ) {
+                    $cache[ $cache_key ] = $items;
+
+                    return apply_filters( 'woobt_get_product_items', $items, $product, $context );
+                }
             }
 
             $items = [];
@@ -1851,8 +1858,11 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                 }
             }
 
-            wp_cache_set( $transient_key, $items, 'woobt', 900 );
-            $cache[ $cache_key ] = $items;
+            // Only cache for non-edit contexts
+            if ( $context !== 'edit' ) {
+                wp_cache_set( $transient_key, $items, 'woobt', 900 );
+                $cache[ $cache_key ] = $items;
+            }
 
             return apply_filters( 'woobt_get_product_items', $items, $product, $context );
         }
