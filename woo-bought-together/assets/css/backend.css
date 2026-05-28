@@ -294,6 +294,37 @@
     display: inline-block;
 }
 
+/* Notice */
+.woobt-notice {
+    background-color: #fef9e7;
+    border-left: 4px solid #f0c33c;
+    padding: 8px 12px;
+    margin: 5px 0 0;
+    border-radius: 4px;
+    font-size: 13px !important;
+    line-height: 1.5;
+    color: #6d5c10;
+}
+
+.woobt-notice:before {
+    content: "\f348";
+    font-family: dashicons;
+    margin-right: 6px;
+    color: #d4a017;
+    font-size: 16px;
+    vertical-align: text-bottom;
+}
+
+.woobt-notice a {
+    color: #9a7b0a;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.woobt-notice a:hover {
+    color: #6d5c10;
+}
+
 /* Settings */
 
 #woobt_settings input[type="search"], #woobt_settings input[type="text"], #woobt_settings input[type="number"] {
