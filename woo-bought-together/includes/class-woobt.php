@@ -106,8 +106,6 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
         }
 
         function init() {
-            // load text-domain
-            load_plugin_textdomain( 'woo-bought-together', false, basename( WOOBT_DIR ) . '/languages/' );
 
             self::$types      = (array) apply_filters( 'woobt_product_types', self::$types );
             self::$image_size = apply_filters( 'woobt_image_size', self::$image_size );

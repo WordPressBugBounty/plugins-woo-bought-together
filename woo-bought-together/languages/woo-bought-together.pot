@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.8.3\n"
+"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.8.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-bought-together\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-05-28T04:10:33+00:00\n"
+"POT-Creation-Date: 2026-06-13T03:58:21+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woo-bought-together\n"
@@ -493,7 +493,7 @@ msgid "This item"
 msgstr ""
 
 #: includes/class-backend.php:561
-#: includes/class-woobt.php:1229
+#: includes/class-woobt.php:1227
 msgid "This item:"
 msgstr ""
 
@@ -503,8 +503,8 @@ msgstr ""
 
 #. translators: attribute name
 #: includes/class-backend.php:573
-#: includes/class-woobt.php:1282
-#: includes/class-woobt.php:1308
+#: includes/class-woobt.php:1280
+#: includes/class-woobt.php:1306
 #, php-format
 msgid "Choose %s"
 msgstr ""
@@ -517,7 +517,7 @@ msgstr ""
 
 #: includes/class-backend.php:580
 #: includes/class-backend.php:586
-#: includes/class-woobt.php:1318
+#: includes/class-woobt.php:1316
 msgid "Clear"
 msgstr ""
 
@@ -526,7 +526,7 @@ msgid "Additional price"
 msgstr ""
 
 #: includes/class-backend.php:597
-#: includes/class-woobt.php:234
+#: includes/class-woobt.php:232
 msgid "Additional price:"
 msgstr ""
 
@@ -535,7 +535,7 @@ msgid "Total price"
 msgstr ""
 
 #: includes/class-backend.php:608
-#: includes/class-woobt.php:235
+#: includes/class-woobt.php:233
 msgid "Total:"
 msgstr ""
 
@@ -547,7 +547,7 @@ msgstr ""
 #: includes/class-backend.php:620
 #: includes/class-backend.php:1436
 #: includes/class-blocks.php:135
-#: includes/class-woobt.php:278
+#: includes/class-woobt.php:276
 #, php-format
 msgid "(bought together %s)"
 msgstr ""
@@ -560,14 +560,14 @@ msgstr ""
 
 #: includes/class-backend.php:626
 #: includes/class-backend.php:632
-#: includes/class-woobt.php:236
+#: includes/class-woobt.php:234
 msgid "Add to cart"
 msgstr ""
 
 #: includes/class-backend.php:637
 #: includes/class-backend.php:643
-#: includes/class-woobt.php:236
-#: includes/class-woobt.php:1724
+#: includes/class-woobt.php:234
+#: includes/class-woobt.php:1722
 msgid "Add all to cart"
 msgstr ""
 
@@ -596,7 +596,7 @@ msgid "Require selection"
 msgstr ""
 
 #: includes/class-backend.php:681
-#: includes/class-woobt.php:237
+#: includes/class-woobt.php:235
 msgid "Please select a purchasable variation for [name] before adding this product to the cart."
 msgstr ""
 
@@ -1060,90 +1060,90 @@ msgstr ""
 msgid "After sub-product quantity"
 msgstr ""
 
-#: includes/class-woobt.php:115
+#: includes/class-woobt.php:113
 msgid "Above add to cart form"
 msgstr ""
 
-#: includes/class-woobt.php:116
+#: includes/class-woobt.php:114
 msgid "Under add to cart form"
 msgstr ""
 
-#: includes/class-woobt.php:117
+#: includes/class-woobt.php:115
 msgid "Above add to cart button"
 msgstr ""
 
-#: includes/class-woobt.php:118
+#: includes/class-woobt.php:116
 msgid "Under add to cart button"
 msgstr ""
 
-#: includes/class-woobt.php:119
+#: includes/class-woobt.php:117
 msgid "Under the title"
 msgstr ""
 
-#: includes/class-woobt.php:120
+#: includes/class-woobt.php:118
 msgid "Under the price"
 msgstr ""
 
-#: includes/class-woobt.php:121
+#: includes/class-woobt.php:119
 msgid "Under the excerpt"
 msgstr ""
 
-#: includes/class-woobt.php:122
+#: includes/class-woobt.php:120
 msgid "Under the meta"
 msgstr ""
 
-#: includes/class-woobt.php:123
+#: includes/class-woobt.php:121
 msgid "Above summary"
 msgstr ""
 
-#: includes/class-woobt.php:124
+#: includes/class-woobt.php:122
 msgid "Under summary"
 msgstr ""
 
-#: includes/class-woobt.php:125
+#: includes/class-woobt.php:123
 msgid "None (hide it)"
 msgstr ""
 
-#: includes/class-woobt.php:355
+#: includes/class-woobt.php:353
 msgid "One of the associated products is unavailable."
 msgstr ""
 
 #. translators: product name
-#: includes/class-woobt.php:356
-#: includes/class-woobt.php:364
-#: includes/class-woobt.php:373
-#: includes/class-woobt.php:379
-#: includes/class-woobt.php:387
-#: includes/class-woobt.php:396
-#: includes/class-woobt.php:402
-#: includes/class-woobt.php:411
-#: includes/class-woobt.php:418
-#: includes/class-woobt.php:427
-#: includes/class-woobt.php:434
-#: includes/class-woobt.php:441
+#: includes/class-woobt.php:354
+#: includes/class-woobt.php:362
+#: includes/class-woobt.php:371
+#: includes/class-woobt.php:377
+#: includes/class-woobt.php:385
+#: includes/class-woobt.php:394
+#: includes/class-woobt.php:400
+#: includes/class-woobt.php:409
+#: includes/class-woobt.php:416
+#: includes/class-woobt.php:425
+#: includes/class-woobt.php:432
+#: includes/class-woobt.php:439
 msgid "You cannot add this product to the cart."
 msgstr ""
 
 #. translators: product name
-#: includes/class-woobt.php:410
+#: includes/class-woobt.php:408
 #, php-format
 msgid "\"%s\" is un-purchasable."
 msgstr ""
 
 #. translators: product name
-#: includes/class-woobt.php:417
+#: includes/class-woobt.php:415
 #, php-format
 msgid "You cannot add another \"%s\" to the cart."
 msgstr ""
 
 #. translators: product name
-#: includes/class-woobt.php:426
+#: includes/class-woobt.php:424
 #, php-format
 msgid "\"%s\" does not reach the minimum quantity."
 msgstr ""
 
 #. translators: product name
-#: includes/class-woobt.php:433
+#: includes/class-woobt.php:431
 #, php-format
 msgid "\"%s\" passes the maximum quantity."
 msgstr ""
