@@ -208,7 +208,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
         function enqueue_scripts() {
             // carousel
             if ( apply_filters( 'woobt_carousel', true ) ) {
-                wp_enqueue_style( 'slick', WOOBT_URI . 'assets/slick/slick.css' );
+                wp_enqueue_style( 'slick', WOOBT_URI . 'assets/slick/slick.css', [], WOOBT_VERSION );
                 wp_enqueue_script( 'slick', WOOBT_URI . 'assets/slick/slick.min.js', [ 'jquery' ], WOOBT_VERSION, true );
             }
 
@@ -276,9 +276,9 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                 $associated_text = WPCleverWoobt_Helper()->localization( 'associated', /* translators: product name */ esc_html__( '(bought together %s)', 'woo-bought-together' ) );
 
                 if ( str_contains( $item_name, '</a>' ) ) {
-                    $name = sprintf( $associated_text, '<a href="' . get_permalink( $parent_id ) . '">' . get_the_title( $parent_id ) . '</a>' );
+                    $name = sprintf( $associated_text, '<a href="' . esc_url( get_permalink( $parent_id ) ) . '">' . esc_html( get_the_title( $parent_id ) ) . '</a>' );
                 } else {
-                    $name = sprintf( $associated_text, get_the_title( $parent_id ) );
+                    $name = sprintf( $associated_text, esc_html( get_the_title( $parent_id ) ) );
                 }
 
                 $item_name .= ' <span class="woobt-item-name">' . apply_filters( 'woobt_item_name', $name, $item ) . '</span>';
@@ -327,9 +327,9 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             $custom_request = apply_filters( 'woobt_custom_request_data', 'data' );
 
             if ( isset( $_REQUEST['woobt_ids'] ) ) {
-                $ids = $_REQUEST['woobt_ids'];
+                $ids = wp_unslash( $_REQUEST['woobt_ids'] ?? '' ) ; // phpcs:ignore WordPress.Security.NonceVerification.Missing
             } elseif ( isset( $_REQUEST[ $custom_request ]['woobt_ids'] ) ) {
-                $ids = $_REQUEST[ $custom_request ]['woobt_ids'];
+                $ids = wp_unslash( $_REQUEST[ $custom_request ]['woobt_ids'] ?? '' );
             } else {
                 $ids = '';
             }
@@ -452,10 +452,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             $custom_request = apply_filters( 'woobt_custom_request_data', 'data' );
 
             if ( isset( $_REQUEST['woobt_ids'] ) ) {
-                $ids = $_REQUEST['woobt_ids'];
+                $ids = wp_unslash( $_REQUEST['woobt_ids'] ?? '' ) ; // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 unset( $_REQUEST['woobt_ids'] );
             } elseif ( isset( $_REQUEST[ $custom_request ]['woobt_ids'] ) ) {
-                $ids = $_REQUEST[ $custom_request ]['woobt_ids'];
+                $ids = wp_unslash( $_REQUEST[ $custom_request ]['woobt_ids'] ?? '' );
                 unset( $_REQUEST[ $custom_request ]['woobt_ids'] );
             } else {
                 $ids = '';
@@ -575,7 +575,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
         function ajax_get_variation_items() {
             if ( ! apply_filters( 'woobt_disable_nonce_check', false, 'get_variation' ) ) {
-                if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) ) {
+                if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) ) {
                     die( 'Permissions check failed!' );
                 }
             }
@@ -584,7 +584,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                 return;
             }
 
-            $variation_id = absint( sanitize_text_field( $_POST['variation_id'] ) );
+            $variation_id = absint( sanitize_text_field( wp_unslash( $_POST['variation_id'] ?? '' ) ) );
 
             self::show_items( $variation_id, false, true );
 
@@ -593,7 +593,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
 
         function ajax_add_all_to_cart() {
             if ( ! apply_filters( 'woobt_disable_nonce_check', false, 'add_all_to_cart' ) ) {
-                if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) ) {
+                if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) ) {
                     die( 'Permissions check failed!' );
                 }
             }
@@ -602,12 +602,12 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                 return;
             }
 
-            $product_id     = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $_POST['product_id'] ) );
+            $product_id     = apply_filters( 'woocommerce_add_to_cart_product_id', absint( wp_unslash( $_POST['product_id'] ?? '' ) ) );
             $product        = wc_get_product( $product_id );
             $product_status = get_post_status( $product_id );
-            $quantity       = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_POST['quantity'] ) );
-            $variation_id   = absint( $_POST['variation_id'] ?? 0 );
-            $variation      = (array) ( $_POST['variation'] ?? [] );
+            $quantity       = empty( $_POST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_POST['quantity'] ?? '' ) );
+            $variation_id   = absint( wp_unslash( $_POST['variation_id'] ?? 0 ) );
+            $variation      = (array) ( wp_unslash( $_POST['variation'] ?? [] ) );
 
             if ( $product && 'variation' === $product->get_type() ) {
                 $variation_id = $product_id;
@@ -1271,7 +1271,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                                                             </th>
                                                             <td class="value">
                                                                 <?php
-                                                                $selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( stripslashes( urldecode( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) ) : $this_item_product->get_variation_default_attribute( $attribute_name );
+                                                                $selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( wp_unslash( urldecode( wp_unslash( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) ) ) : $this_item_product->get_variation_default_attribute( $attribute_name );
                                                                 wc_dropdown_variation_attribute_options( [
                                                                         'options'          => $options,
                                                                         'attribute'        => $attribute_name,
@@ -1297,7 +1297,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                                                             </div>
                                                             <div class="value">
                                                                 <?php
-                                                                $selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( stripslashes( urldecode( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) ) : $this_item_product->get_variation_default_attribute( $attribute_name );
+                                                                $selected = isset( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ? wc_clean( wp_unslash( urldecode( wp_unslash( $_REQUEST[ 'attribute_' . sanitize_title( $attribute_name ) ] ) ) ) ) : $this_item_product->get_variation_default_attribute( $attribute_name );
                                                                 wc_dropdown_variation_attribute_options( [
                                                                         'options'          => $options,
                                                                         'attribute'        => $attribute_name,

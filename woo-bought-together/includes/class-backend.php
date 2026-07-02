@@ -86,7 +86,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
 
         function admin_menu_content() {
             add_thickbox();
-            $active_tab = sanitize_key( $_GET['tab'] ?? 'settings' );
+            $active_tab = sanitize_key( wp_unslash( $_GET['tab'] ?? 'settings' ) );
             ?>
             <div class="wpclever_settings_page wrap">
                 <div class="wpclever_settings_page_header">
@@ -109,7 +109,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                     </div>
                 </div>
                 <h2></h2>
-                <?php if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) { ?>
+                <?php if ( isset( $_GET['settings-updated'] ) && sanitize_text_field( wp_unslash( $_GET['settings-updated'] ?? '' ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended ?>
                     <div class="notice notice-success is-dismissible">
                         <p><?php esc_html_e( 'Settings updated.', 'woo-bought-together' ); ?></p>
                     </div>
@@ -701,8 +701,8 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
 
                                     <?php
                                     echo '<p>';
-                                    $num   = absint( $_GET['num'] ?? 50 );
-                                    $paged = absint( $_GET['paged'] ?? 1 );
+                                    $num   = absint( wp_unslash( $_GET['num'] ?? 50 ) );
+                                    $paged = absint( wp_unslash( $_GET['paged'] ?? 1 ) );
 
                                     if ( isset( $_GET['act'] ) && ( $_GET['act'] === 'migrate' ) ) {
                                         $args = [
@@ -1175,13 +1175,13 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
         }
 
         function ajax_add_rule() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
                 die( 'Permissions check failed!' );
             }
 
             $rule      = [];
-            $name      = sanitize_key( $_POST['name'] ?? 'woobt_rules' );
-            $rule_data = $_POST['rule_data'] ?? '';
+            $name      = sanitize_key( wp_unslash( $_POST['name'] ?? 'woobt_rules' ) );
+            $rule_data = wp_unslash( $_POST['rule_data'] ?? '' ) ; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
             if ( ! empty( $rule_data ) ) {
                 $form_rule = [];
@@ -1197,32 +1197,32 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
         }
 
         function ajax_add_combination() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
                 die( 'Permissions check failed!' );
             }
 
-            $key  = sanitize_key( $_POST['key'] ?? WPCleverWoobt_Helper()->generate_key() );
-            $name = sanitize_key( $_POST['name'] ?? 'woobt_rules' );
-            $type = sanitize_key( $_POST['type'] ?? 'apply' );
+            $key  = sanitize_key( wp_unslash( $_POST['key'] ?? '' ) ?? WPCleverWoobt_Helper()->generate_key() );
+            $name = sanitize_key( wp_unslash( $_POST['name'] ?? 'woobt_rules' ) );
+            $type = sanitize_key( wp_unslash( $_POST['type'] ?? 'apply' ) );
 
             self::combination( '', $name, null, $key, $type );
             wp_die();
         }
 
         function ajax_search_term() {
-            if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_REQUEST['nonce'] ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( ! isset( $_REQUEST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_REQUEST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
                 die( 'Permissions check failed!' );
             }
 
             $return = [];
 
             $args = [
-                    'taxonomy'   => sanitize_text_field( $_REQUEST['taxonomy'] ),
+                    'taxonomy'   => sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ?? '' ) ),
                     'orderby'    => 'id',
                     'order'      => 'ASC',
                     'hide_empty' => false,
                     'fields'     => 'all',
-                    'name__like' => sanitize_text_field( $_REQUEST['q'] ),
+                    'name__like' => sanitize_text_field( wp_unslash( $_REQUEST['q'] ?? '' ) ),
             ];
 
             $terms = get_terms( $args );
@@ -1231,7 +1231,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                 foreach ( $terms as $term ) {
                     $return[] = [
                             $term->slug,
-                            self::get_term_name( $term, sanitize_text_field( $_REQUEST['taxonomy'] ) )
+                            self::get_term_name( $term, sanitize_text_field( wp_unslash( $_REQUEST['taxonomy'] ?? '' ) ) )
                     ];
                 }
             }
@@ -1353,7 +1353,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                 return null;
             }
 
-            wp_enqueue_style( 'hint', WOOBT_URI . 'assets/css/hint.css' );
+            wp_enqueue_style( 'hint', WOOBT_URI . 'assets/css/hint.css', [], WOOBT_VERSION );
             wp_enqueue_style( 'woobt-backend', WOOBT_URI . 'assets/css/backend.css', [ 'woocommerce_admin_styles' ], WOOBT_VERSION );
             wp_enqueue_script( 'woobt-backend', WOOBT_URI . 'assets/js/backend.js', [
                     'jquery',
@@ -1433,37 +1433,37 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
 
         function before_order_item_meta( $item_id, $item ) {
             if ( $parent_id = $item->get_meta( '_woobt_parent_id' ) ) {
-                echo sprintf( WPCleverWoobt_Helper()->localization( 'associated', /* translators: product name */ esc_html__( '(bought together %s)', 'woo-bought-together' ) ), get_the_title( $parent_id ) );
+                echo sprintf( WPCleverWoobt_Helper()->localization( 'associated', /* translators: product name */ esc_html__( '(bought together %s)', 'woo-bought-together' ) ), esc_html( get_the_title( $parent_id ) ) );
             }
         }
 
         function ajax_update_search_settings() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
                 die( 'Permissions check failed!' );
             }
 
             $settings                    = (array) get_option( 'woobt_settings', [] );
-            $settings['search_limit']    = (int) sanitize_text_field( $_POST['limit'] );
-            $settings['search_sku']      = sanitize_text_field( $_POST['sku'] );
-            $settings['search_id']       = sanitize_text_field( $_POST['id'] );
-            $settings['search_exact']    = sanitize_text_field( $_POST['exact'] );
-            $settings['search_sentence'] = sanitize_text_field( $_POST['sentence'] );
-            $settings['search_same']     = sanitize_text_field( $_POST['same'] );
-            $settings['search_types']    = array_map( 'sanitize_text_field', (array) $_POST['types'] );
+            $settings['search_limit']    = (int) sanitize_text_field( wp_unslash( $_POST['limit'] ?? '' ) );
+            $settings['search_sku']      = sanitize_text_field( wp_unslash( $_POST['sku'] ?? '' ) );
+            $settings['search_id']       = sanitize_text_field( wp_unslash( $_POST['id'] ?? '' ) );
+            $settings['search_exact']    = sanitize_text_field( wp_unslash( $_POST['exact'] ?? '' ) );
+            $settings['search_sentence'] = sanitize_text_field( wp_unslash( $_POST['sentence'] ?? '' ) );
+            $settings['search_same']     = sanitize_text_field( wp_unslash( $_POST['same'] ?? '' ) );
+            $settings['search_types']    = array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['types'] ?? [] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
             update_option( 'woobt_settings', $settings );
             wp_die();
         }
 
         function ajax_get_search_results() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) ) {
                 die( 'Permissions check failed!' );
             }
 
             $types         = WPCleverWoobt_Helper()->get_setting( 'search_types', [ 'all' ] );
-            $keyword       = esc_html( $_POST['woobt_keyword'] );
-            $id            = absint( $_POST['woobt_id'] );
-            $exclude_ids   = explode( ',', $_POST['woobt_ids'] );
+            $keyword       = esc_html( wp_unslash( $_POST['woobt_keyword'] ?? '' ) );
+            $id            = absint( wp_unslash( $_POST['woobt_id'] ?? '' ) );
+            $exclude_ids   = explode( ',', wp_unslash( $_POST['woobt_ids'] ?? '' ) );
             $exclude_ids[] = $id;
 
             if ( ( WPCleverWoobt_Helper()->get_setting( 'search_id', 'no' ) === 'yes' ) && is_numeric( $keyword ) ) {
@@ -1553,7 +1553,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
         }
 
         function ajax_add_text() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) ) {
                 die( 'Permissions check failed!' );
             }
 
@@ -1591,7 +1591,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             echo '<li class="' . esc_attr( trim( $product_class ) ) . '" data-id="' . $product->get_id() . '">' . $hidden_input . '<span class="woobt-move"></span><span class="price hint--right" aria-label="' . esc_html__( 'Set a new price using a number (eg. "49") or percentage (eg. "90%" of original price)', 'woo-bought-together' ) . '"><input type="text" name="woobt_ids[' . $key . '][price]" value="' . $price . '"/></span><span class="qty hint--right" aria-label="' . esc_html__( 'Default quantity', 'woo-bought-together' ) . '"><input type="number" name="woobt_ids[' . $key . '][qty]" value="' . esc_attr( $qty ) . '" step="' . esc_attr( $step ) . '"/></span><span class="img">' . $product->get_image( [
                             30,
                             30
-                    ] ) . '</span><span class="data">' . ( $product->get_status() === 'private' ? '<span class="info">private</span> ' : '' ) . '<span class="name">' . wp_strip_all_tags( $product->get_name() ) . '</span> <span class="info">' . $product->get_price_html() . '</span></span> <span class="type"><a href="' . get_edit_post_link( $product_id ) . '" target="_blank">' . $product->get_type() . '<br/>#' . $product->get_id() . '</a></span> ' . $remove_btn . '</li>';
+                    ] ) . '</span><span class="data">' . ( $product->get_status() === 'private' ? '<span class="info">private</span> ' : '' ) . '<span class="name">' . wp_strip_all_tags( $product->get_name() ) . '</span> <span class="info">' . $product->get_price_html() . '</span></span> <span class="type"><a href="' . esc_url( get_edit_post_link( $product_id ) ) . '" target="_blank">' . $product->get_type() . '<br/>#' . $product->get_id() . '</a></span> ' . $remove_btn . '</li>';
         }
 
         function product_data_li_deleted( $product_id, $key ) {
@@ -1907,7 +1907,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             }
 
             if ( isset( $_POST['woobt_ids'] ) ) {
-                update_post_meta( $post_id, 'woobt_ids', WPCleverWoobt_Helper()->sanitize_array( $_POST['woobt_ids'] ) );
+                update_post_meta( $post_id, 'woobt_ids', WPCleverWoobt_Helper()->sanitize_array( wp_unslash( $_POST['woobt_ids'] ?? '' ) ) );
             } else {
                 delete_post_meta( $post_id, 'woobt_ids' );
             }
@@ -1917,7 +1917,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             wp_cache_delete( 'woobt_items_' . $post_id . '_validate', 'woobt' );
 
             if ( isset( $_POST['woobt_discount'] ) ) {
-                update_post_meta( $post_id, 'woobt_discount', sanitize_text_field( $_POST['woobt_discount'] ) );
+                update_post_meta( $post_id, 'woobt_discount', sanitize_text_field( wp_unslash( $_POST['woobt_discount'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_checked_all'] ) ) {
@@ -1933,7 +1933,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             }
 
             if ( isset( $_POST['woobt_selection'] ) ) {
-                update_post_meta( $post_id, 'woobt_selection', sanitize_text_field( $_POST['woobt_selection'] ) );
+                update_post_meta( $post_id, 'woobt_selection', sanitize_text_field( wp_unslash( $_POST['woobt_selection'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_custom_qty'] ) ) {
@@ -1955,48 +1955,48 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             }
 
             if ( isset( $_POST['woobt_limit_each_min'] ) ) {
-                update_post_meta( $post_id, 'woobt_limit_each_min', sanitize_text_field( $_POST['woobt_limit_each_min'] ) );
+                update_post_meta( $post_id, 'woobt_limit_each_min', sanitize_text_field( wp_unslash( $_POST['woobt_limit_each_min'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_limit_each_max'] ) ) {
-                update_post_meta( $post_id, 'woobt_limit_each_max', sanitize_text_field( $_POST['woobt_limit_each_max'] ) );
+                update_post_meta( $post_id, 'woobt_limit_each_max', sanitize_text_field( wp_unslash( $_POST['woobt_limit_each_max'] ?? '' ) ) );
             }
 
             // overwrite displaying
 
             if ( isset( $_POST['woobt_layout'] ) ) {
-                update_post_meta( $post_id, 'woobt_layout', sanitize_text_field( $_POST['woobt_layout'] ) );
+                update_post_meta( $post_id, 'woobt_layout', sanitize_text_field( wp_unslash( $_POST['woobt_layout'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_position'] ) ) {
-                update_post_meta( $post_id, 'woobt_position', sanitize_text_field( $_POST['woobt_position'] ) );
+                update_post_meta( $post_id, 'woobt_position', sanitize_text_field( wp_unslash( $_POST['woobt_position'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_atc_button'] ) ) {
-                update_post_meta( $post_id, 'woobt_atc_button', sanitize_text_field( $_POST['woobt_atc_button'] ) );
+                update_post_meta( $post_id, 'woobt_atc_button', sanitize_text_field( wp_unslash( $_POST['woobt_atc_button'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_show_this_item'] ) ) {
-                update_post_meta( $post_id, 'woobt_show_this_item', sanitize_text_field( $_POST['woobt_show_this_item'] ) );
+                update_post_meta( $post_id, 'woobt_show_this_item', sanitize_text_field( wp_unslash( $_POST['woobt_show_this_item'] ?? '' ) ) );
             }
 
             if ( isset( $_POST['woobt_before_text'] ) ) {
-                update_post_meta( $post_id, 'woobt_before_text', sanitize_post_field( 'post_content', $_POST['woobt_before_text'], $post_id, 'display' ) );
+                update_post_meta( $post_id, 'woobt_before_text', sanitize_post_field( 'post_content', wp_unslash( $_POST['woobt_before_text'] ?? '' ), $post_id, 'display' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
             }
 
             if ( isset( $_POST['woobt_after_text'] ) ) {
-                update_post_meta( $post_id, 'woobt_after_text', sanitize_post_field( 'post_content', $_POST['woobt_after_text'], $post_id, 'display' ) );
+                update_post_meta( $post_id, 'woobt_after_text', sanitize_post_field( 'post_content', wp_unslash( $_POST['woobt_after_text'] ?? '' ), $post_id, 'display' ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
             }
         }
 
         function ajax_import_export() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
                 die( 'Permissions check failed!' );
             }
 
             $ids      = [];
             $ids_arr  = [];
-            $ids_data = sanitize_post( $_POST['ids'] ?? '' );
+            $ids_data = sanitize_post( wp_unslash( $_POST['ids'] ?? '' ) );
             parse_str( $ids_data, $ids_arr );
 
             if ( isset( $ids_arr['woobt_ids'] ) && is_array( $ids_arr['woobt_ids'] ) ) {
@@ -2004,19 +2004,19 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             }
 
             echo '<textarea class="woobt_import_export_data" style="width: 100%; height: 200px">' . esc_textarea( ( ! empty( $ids ) ? wp_json_encode( $ids, JSON_PRETTY_PRINT ) : '' ) ) . '</textarea>';
-            echo '<div style="display: flex; align-items: center"><button class="button button-primary woobt-import-export-save">' . esc_html__( 'Update', 'woo-product-timer' ) . '</button>';
-            echo '<span style="color: #ff4f3b; font-size: 10px; margin-left: 10px">' . esc_html__( '* All selected products will be replaced after pressing Update!', 'woo-product-timer' ) . '</span>';
+            echo '<div style="display: flex; align-items: center"><button class="button button-primary woobt-import-export-save">' . esc_html__( 'Update', 'woo-bought-together' ) . '</button>';
+            echo '<span style="color: #ff4f3b; font-size: 10px; margin-left: 10px">' . esc_html__( '* All selected products will be replaced after pressing Update!', 'woo-bought-together' ) . '</span>';
             echo '</div>';
 
             wp_die();
         }
 
         function ajax_import_export_save() {
-            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
                 die( 'Permissions check failed!' );
             }
 
-            $ids = sanitize_textarea_field( $_POST['ids'] ?? '' );
+            $ids = sanitize_textarea_field( wp_unslash( $_POST['ids'] ?? '' ) );
 
             if ( ! empty( $ids ) ) {
                 $items = json_decode( stripcslashes( $ids ), true );
@@ -2062,10 +2062,10 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
         function apply_product_filter( $query ) {
             global $pagenow;
 
-            if ( $query->is_admin && $pagenow == 'edit.php' && isset( $_GET['woobt'] ) && $_GET['woobt'] != '' && $_GET['post_type'] == 'product' ) {
+            if ( $query->is_admin && $pagenow == 'edit.php' && isset( $_GET['woobt'] ) && wp_unslash( $_GET['woobt'] ?? '' ) != '' && wp_unslash( $_GET['post_type'] ?? '' ) == 'product' ) {
                 $meta_query = (array) $query->get( 'meta_query' );
 
-                if ( $_GET['woobt'] === 'yes' ) {
+                if ( wp_unslash( $_GET['woobt'] ?? '' ) === 'yes' ) {
                     $meta_query[] = [
                             'relation' => 'AND',
                             [
