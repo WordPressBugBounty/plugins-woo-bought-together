@@ -118,6 +118,10 @@ if ( ! class_exists( 'WPCleverWoobt_Blocks' ) ) {
 				return $response;
 			}
 
+			if ( ! function_exists( 'WC' ) || ! WC() || ! WC()->cart ) {
+				return $response;
+			}
+
 			$cart_contents = WC()->cart->get_cart();
 			$cart_quantity = WPCleverWoobt_Helper()->get_setting( 'cart_quantity', 'yes' ) !== 'no';
 
