@@ -30,6 +30,8 @@
         woobt_enhanced_select();
         woobt_combination_init();
         woobt_combination_terms_init();
+        woobt_combination_stock_statuses_init();
+        woobt_stock_statuses_init();
         woobt_sortable();
     });
 
@@ -126,6 +128,28 @@
 
         $.post(ajaxurl, data, function (response) {
             $('#woobt_search_settings').removeClass('woobt_search_settings_updating');
+        });
+    });
+
+    $(document).on('click touch', '#woobt_multiple_rules_save', function (e) {
+        // save multiple rules setting
+        e.preventDefault();
+
+        var $btn = $(this);
+        var $saved = $('#woobt_multiple_rules_saved');
+
+        $btn.prop('disabled', true);
+        $saved.hide();
+
+        var data = {
+            action: 'woobt_update_multiple_rules',
+            nonce: woobt_vars.nonce,
+            multiple_rules: $('#woobt_multiple_rules').val(),
+        };
+
+        $.post(ajaxurl, data, function (response) {
+            $btn.prop('disabled', false);
+            $saved.fadeIn().delay(2000).fadeOut();
         });
     });
 
@@ -397,6 +421,7 @@
             $combinations.append(response);
             woobt_combination_init();
             woobt_combination_terms_init();
+            woobt_combination_stock_statuses_init();
         });
 
         e.preventDefault();
@@ -413,12 +438,15 @@
 
         $.post(ajaxurl, data, function (response) {
             $('.woobt_rules').append(response);
+            $('.woobt_rules_empty').hide();
             woobt_source_init();
             woobt_build_label();
             woobt_terms_init();
             woobt_enhanced_select();
             woobt_combination_init();
             woobt_combination_terms_init();
+            woobt_combination_stock_statuses_init();
+            woobt_stock_statuses_init();
             $('.woobt_rules').removeClass('woobt_rules_loading');
         });
     });
@@ -436,12 +464,15 @@
 
         $.post(ajaxurl, data, function (response) {
             $(response).insertAfter($rule);
+            $('.woobt_rules_empty').hide();
             woobt_source_init();
             woobt_build_label();
             woobt_terms_init();
             woobt_enhanced_select();
             woobt_combination_init();
             woobt_combination_terms_init();
+            woobt_combination_stock_statuses_init();
+            woobt_stock_statuses_init();
             $('.woobt_rules').removeClass('woobt_rules_loading');
         });
     });
@@ -451,6 +482,10 @@
 
         if (confirm('Are you sure?')) {
             $(this).closest('.woobt_rule').remove();
+
+            if ($('.woobt_rules .woobt_rule').length === 0) {
+                $('.woobt_rules_empty').show();
+            }
         }
     });
 
@@ -521,12 +556,20 @@
                 $combination.find('.woobt_combination_compare_wrap').hide();
                 $combination.find('.woobt_combination_val_wrap').hide();
                 $combination.find('.woobt_combination_same_wrap').hide();
+                $combination.find('.woobt_combination_stock_status_wrap').hide();
             } else if (val === 'same') {
                 $combination.find('.woobt_combination_compare_wrap').hide();
                 $combination.find('.woobt_combination_val_wrap').hide();
                 $combination.find('.woobt_combination_same_wrap').show();
+                $combination.find('.woobt_combination_stock_status_wrap').hide();
+            } else if (val === 'stock_status') {
+                $combination.find('.woobt_combination_compare_wrap').hide();
+                $combination.find('.woobt_combination_val_wrap').hide();
+                $combination.find('.woobt_combination_same_wrap').hide();
+                $combination.find('.woobt_combination_stock_status_wrap').show();
             } else {
                 $combination.find('.woobt_combination_same_wrap').hide();
+                $combination.find('.woobt_combination_stock_status_wrap').hide();
                 $combination.find('.woobt_combination_compare_wrap').show();
                 $combination.find('.woobt_combination_val_wrap').show();
             }
@@ -559,6 +602,34 @@
             });
         });
 
+    }
+
+    function woobt_combination_stock_statuses_init() {
+        // Initialize selectWoo for combination stock status multi-select
+        $('.woobt_combination_stock_statuses').each(function () {
+            var $this = $(this);
+
+            if (!$this.hasClass('select2-hidden-accessible')) {
+                $this.selectWoo({
+                    placeholder: woobt_vars.i18n_select_stock_status || 'Select stock status...',
+                    allowClear: false,
+                });
+            }
+        });
+    }
+
+    function woobt_stock_statuses_init() {
+        // Initialize selectWoo for stock status multi-select
+        $('.woobt_stock_statuses').each(function () {
+            var $this = $(this);
+
+            if (!$this.hasClass('select2-hidden-accessible')) {
+                $this.selectWoo({
+                    placeholder: woobt_vars.i18n_select_stock_status || 'Select stock status...',
+                    allowClear: false,
+                });
+            }
+        });
     }
 
     function woobt_source_init(type = 'apply', $rule) {

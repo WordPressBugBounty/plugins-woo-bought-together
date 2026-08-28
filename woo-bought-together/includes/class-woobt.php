@@ -327,7 +327,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             $custom_request = apply_filters( 'woobt_custom_request_data', 'data' );
 
             if ( isset( $_REQUEST['woobt_ids'] ) ) {
-                $ids = wp_unslash( $_REQUEST['woobt_ids'] ?? '' ) ; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+                $ids = wp_unslash( $_REQUEST['woobt_ids'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
             } elseif ( isset( $_REQUEST[ $custom_request ]['woobt_ids'] ) ) {
                 $ids = wp_unslash( $_REQUEST[ $custom_request ]['woobt_ids'] ?? '' );
             } else {
@@ -452,7 +452,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             $custom_request = apply_filters( 'woobt_custom_request_data', 'data' );
 
             if ( isset( $_REQUEST['woobt_ids'] ) ) {
-                $ids = wp_unslash( $_REQUEST['woobt_ids'] ?? '' ) ; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+                $ids = wp_unslash( $_REQUEST['woobt_ids'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
                 unset( $_REQUEST['woobt_ids'] );
             } elseif ( isset( $_REQUEST[ $custom_request ]['woobt_ids'] ) ) {
                 $ids = wp_unslash( $_REQUEST[ $custom_request ]['woobt_ids'] ?? '' );
@@ -668,6 +668,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                     $item_new_price = WPCleverWoobt_Helper()->new_price( $item_price, $cart_item['woobt_new_price'] );
 
                     $cart_item['data']->set_price( $item_new_price );
+                    $cart_item['data']->get_price(); // resynchronize the price cache
                 }
 
                 // associated products
@@ -677,6 +678,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                     $item_new_price = WPCleverWoobt_Helper()->new_price( $item_price, $cart_item['woobt_price_item'] );
 
                     $cart_item['data']->set_price( $item_new_price );
+                    $cart_item['data']->get_price(); // resynchronize the price cache
                 }
 
                 // sync quantity
@@ -722,6 +724,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                             if ( $has_associated ) {
                                 $item_new_price = $item_price * ( 100 - (float) $discount ) / 100;
                                 $cart_item['data']->set_price( $item_new_price );
+                                $cart_item['data']->get_price(); // resynchronize the price cache
                             }
                         }
                     }
@@ -1874,160 +1877,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
         }
 
         function get_rule_items( $product = null, $context = 'view' ) {
-            if ( is_a( $product, 'WC_Product' ) ) {
-                $product_id = $product->get_id();
-            } elseif ( is_int( $product ) ) {
-                $product_id = $product;
-                $product    = wc_get_product( $product_id );
-            } else {
-                $product_id = 0;
-            }
-
-            $items          = [];
-            $rules          = [];
-            $all_ids        = [];
-            $multiple_rules = apply_filters( 'woobt_get_items_from_multiple_rules', false );
-
-            if ( $product_id && ! self::is_disable( $product_id ) ) {
-                if ( $multiple_rules ) {
-                    $rules = self::get_rules( $product_id );
-                } else {
-                    $rule    = self::get_rule( $product_id );
-                    $rules[] = $rule;
-                }
-
-                if ( ! empty( $rules ) ) {
-                    foreach ( $rules as $rule ) {
-                        if ( ! empty( $rule ) ) {
-                            $ids     = [];
-                            $key     = $rule['key'] ?? '';
-                            $price   = $rule['price'] ?? '100%';
-                            $limit   = absint( $rule['get_limit'] ?? 3 );
-                            $orderby = $rule['get_orderby'] ?? 'default';
-                            $order   = $rule['get_order'] ?? 'default';
-
-                            switch ( $rule['get'] ) {
-                                case 'all':
-                                    $ids = wc_get_products( [
-                                            'status'  => 'publish',
-                                            'limit'   => $limit,
-                                            'orderby' => $orderby,
-                                            'order'   => $order,
-                                            'exclude' => [ $product_id ],
-                                            'return'  => 'ids',
-                                    ] );
-
-                                    break;
-                                case 'products':
-                                    if ( ! empty( $rule['get_products'] ) && is_array( $rule['get_products'] ) ) {
-                                        $ids = array_diff( $rule['get_products'], [ $product_id ] );
-                                    }
-
-                                    break;
-                                case 'combination':
-                                    if ( ! empty( $rule['get_combination'] ) && is_array( $rule['get_combination'] ) ) {
-                                        $tax_query = [];
-                                        $terms_arr = [];
-
-                                        foreach ( $rule['get_combination'] as $combination ) {
-                                            // term
-                                            if ( ! empty( $combination['apply'] ) && ! empty( $combination['compare'] ) && ! empty( $combination['terms'] ) && is_array( $combination['terms'] ) ) {
-                                                $tax_query[] = [
-                                                        'taxonomy' => $combination['apply'],
-                                                        'field'    => 'slug',
-                                                        'terms'    => $combination['terms'],
-                                                        'operator' => $combination['compare'] === 'is' ? 'IN' : 'NOT IN'
-                                                ];
-                                            }
-
-                                            // has same taxonomy
-                                            if ( ! empty( $combination['apply'] ) && $combination['apply'] === 'same' && ! empty( $combination['same'] ) ) {
-                                                $taxonomy = $combination['same'];
-
-                                                if ( empty( $terms_arr[ $taxonomy ] ) ) {
-                                                    $terms = get_the_terms( $product_id, $taxonomy );
-
-                                                    if ( ! empty( $terms ) && is_array( $terms ) ) {
-                                                        foreach ( $terms as $term ) {
-                                                            $terms_arr[ $taxonomy ][] = $term->slug;
-                                                        }
-                                                    }
-                                                }
-
-                                                if ( ! empty( $terms_arr[ $taxonomy ] ) ) {
-                                                    $tax_query[] = [
-                                                            'taxonomy' => $taxonomy,
-                                                            'field'    => 'slug',
-                                                            'terms'    => $terms_arr[ $taxonomy ],
-                                                            'operator' => 'IN'
-                                                    ];
-                                                }
-                                            }
-                                        }
-
-                                        if ( count( $tax_query ) > 1 ) {
-                                            $tax_query['relation'] = 'AND';
-                                        }
-
-                                        $args = [
-                                                'post_type'      => 'product',
-                                                'post_status'    => 'publish',
-                                                'posts_per_page' => $limit,
-                                                'orderby'        => $orderby,
-                                                'order'          => $order,
-                                                'tax_query'      => $tax_query,
-                                                'post__not_in'   => [ $product_id ],
-                                                'fields'         => 'ids'
-                                        ];
-
-                                        $query = new WP_Query( $args );
-                                        $ids   = $query->posts;
-                                    }
-
-                                    break;
-                                default:
-                                    if ( ! empty( $rule['get_terms'] ) && is_array( $rule['get_terms'] ) ) {
-                                        $args = [
-                                                'post_type'      => 'product',
-                                                'post_status'    => 'publish',
-                                                'posts_per_page' => $limit,
-                                                'orderby'        => $orderby,
-                                                'order'          => $order,
-                                                'tax_query'      => [
-                                                        [
-                                                                'taxonomy' => $rule['get'],
-                                                                'field'    => 'slug',
-                                                                'terms'    => $rule['get_terms'],
-                                                        ],
-                                                ],
-                                                'post__not_in'   => [ $product_id ],
-                                                'fields'         => 'ids'
-                                        ];
-
-                                        $query = new WP_Query( $args );
-                                        $ids   = $query->posts;
-                                    }
-                            }
-
-                            $ids     = array_diff( $ids, $all_ids );
-                            $all_ids = array_merge( $all_ids, $ids );
-
-                            if ( ! empty( $ids ) ) {
-                                foreach ( $ids as $k => $id ) {
-                                    $item_key           = 'rl' . $k . '-' . $key;
-                                    $items[ $item_key ] = [
-                                            'id'    => $id,
-                                            'price' => $price,
-                                            'qty'   => 1,
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return apply_filters( 'woobt_get_rule_items', $items, $product, $context );
+            return [];
         }
 
         function get_default_items( $product = null, $context = 'view' ) {

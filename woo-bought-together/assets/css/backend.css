@@ -139,7 +139,7 @@
 }
 
 .woobt_selected ul li input {
-    width: 50px !important;
+    width: 60px !important;
 }
 
 .woobt_selected li, .woobt_results li {
@@ -170,8 +170,8 @@
 
 .woobt_selected li span.price, .woobt_selected li span.qty {
     display: inline-block;
-    width: 50px;
-    flex: 0 0 50px;
+    width: 60px;
+    flex: 0 0 60px;
 }
 
 .woobt_selected li span.data, .woobt_results li span.data {
@@ -592,6 +592,14 @@ table.wp-list-table span.product-type.woobt:before {
     background-color: #f7f7f7;
     border-bottom: 1px solid #eee;
     position: relative;
+}
+
+.woobt_rules_empty {
+    padding: 24px 16px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #999;
+    font-style: italic;
 }
 
 .woobt_rules.woobt_rules_loading:before {

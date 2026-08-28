@@ -26,6 +26,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             add_action( 'wp_ajax_woobt_search_term', [ $this, 'ajax_search_term' ] );
             add_action( 'wp_ajax_woobt_import_export', [ $this, 'ajax_import_export' ] );
             add_action( 'wp_ajax_woobt_import_export_save', [ $this, 'ajax_import_export_save' ] );
+            add_action( 'wp_ajax_woobt_update_multiple_rules', [ $this, 'ajax_update_multiple_rules' ] );
             add_filter( 'woocommerce_product_data_tabs', [ $this, 'product_data_tabs' ] );
             add_action( 'woocommerce_product_data_panels', [ $this, 'product_data_panels' ] );
             add_action( 'woocommerce_process_product_meta', [ $this, 'process_product_meta' ] );
@@ -143,6 +144,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                     <?php if ( $active_tab === 'settings' ) {
                         $pricing               = WPCleverWoobt_Helper()->get_setting( 'pricing', 'sale_price' );
                         $ignore_onsale         = WPCleverWoobt_Helper()->get_setting( 'ignore_onsale', 'no' );
+                        $multiple_rules        = WPCleverWoobt_Helper()->get_setting( 'multiple_rules', 'no' );
                         $default               = WPCleverWoobt_Helper()->get_setting( 'default', [ 'default' ] );
                         $default_limit         = WPCleverWoobt_Helper()->get_setting( 'default_limit', '5' );
                         $default_price         = WPCleverWoobt_Helper()->get_setting( 'default_price', '100%' );
@@ -199,6 +201,8 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                                         You can configure advanced rules for multiple FBT products at once with the
                                         Smart Rules <a
                                                 href="<?php echo esc_url( admin_url( 'admin.php?page=wpclever-woobt&tab=rules' ) ); ?>">here</a>.
+                                        <input type="hidden" name="woobt_settings[multiple_rules]"
+                                               value="<?php echo esc_attr( $multiple_rules ); ?>"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -541,6 +545,36 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                             </table>
                         </form>
                     <?php } elseif ( $active_tab === 'rules' ) {
+                        $multiple_rules = WPCleverWoobt_Helper()->get_setting( 'multiple_rules', 'no' );
+                        ?>
+                        <table class="form-table">
+                            <tr>
+                                <td colspan="2">
+                                    <p class="description" style="color: #c9356e">
+                                        * This feature only available on Premium Version. Click
+                                        <a href="https://wpclever.net/downloads/frequently-bought-together?utm_source=pro&utm_medium=woobt&utm_campaign=wporg"
+                                           target="_blank">here</a> to buy, just $29!
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><?php esc_html_e( 'Multiple rules', 'woo-bought-together' ); ?></th>
+                                <td>
+                                    <label> <select id="woobt_multiple_rules">
+                                            <option value="no" <?php selected( $multiple_rules, 'no' ); ?>><?php esc_html_e( 'No — only the first matching rule is applied', 'woo-bought-together' ); ?></option>
+                                            <option value="yes" <?php selected( $multiple_rules, 'yes' ); ?>><?php esc_html_e( 'Yes — all matching rules are applied and their products merged', 'woo-bought-together' ); ?></option>
+                                        </select> </label>
+                                    <button type="button" id="woobt_multiple_rules_save"
+                                            class="button button-primary"><?php esc_html_e( 'Save', 'woo-bought-together' ); ?></button>
+                                    <span id="woobt_multiple_rules_saved"
+                                          style="display:none; color:#46b450; margin-left:6px;"><?php esc_html_e( 'Saved!', 'woo-bought-together' ); ?></span>
+                                    <p class="description">
+                                        <?php esc_html_e( 'In "No" mode (default), the plugin checks rules from top to bottom and stops at the first rule a product matches — keeping the result clean and predictable. In "Yes" mode, every matching rule is applied and their product lists are merged together, which is useful when you want a product to inherit items from multiple rules at the same time.', 'woo-bought-together' ); ?>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                        <?php
                         self::rules( 'woobt_rules', WPCleverWoobt::$rules );
                     } elseif ( $active_tab === 'localization' ) { ?>
                         <form method="post" action="options.php">
@@ -818,16 +852,6 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                 <table class="form-table">
                     <tr>
                         <td>
-                            <?php esc_html_e( 'Our plugin checks rules from the top down the list. When there are products that satisfy more than 1 rule, the first rule on top will be prioritized. Please make sure you put the rules in the order of the most to the least prioritized.', 'woo-bought-together' ); ?>
-                            <p class="description" style="color: #c9356e">
-                                * This feature only available on Premium Version. Click
-                                <a href="https://wpclever.net/downloads/frequently-bought-together?utm_source=pro&utm_medium=woobt&utm_campaign=wporg"
-                                   target="_blank">here</a> to buy, just $29!
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             <div class="woobt_rules">
                                 <?php
                                 $rules = array_filter( $rules );
@@ -836,7 +860,11 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                                     foreach ( $rules as $key => $rule ) {
                                         self::rule( $key, $name, $rule, false );
                                     }
-                                }
+                                } else { ?>
+                                    <div class="woobt_rules_empty">
+                                        <span><?php esc_html_e( 'No rules yet. Click "+ Add rule" below to create your first rule.', 'woo-bought-together' ); ?></span>
+                                    </div>
+                                <?php }
                                 ?>
                             </div>
                             <div class="woobt_add_rule">
@@ -1181,7 +1209,7 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
 
             $rule      = [];
             $name      = sanitize_key( wp_unslash( $_POST['name'] ?? 'woobt_rules' ) );
-            $rule_data = wp_unslash( $_POST['rule_data'] ?? '' ) ; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            $rule_data = wp_unslash( $_POST['rule_data'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
 
             if ( ! empty( $rule_data ) ) {
                 $form_rule = [];
@@ -1450,6 +1478,19 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             $settings['search_sentence'] = sanitize_text_field( wp_unslash( $_POST['sentence'] ?? '' ) );
             $settings['search_same']     = sanitize_text_field( wp_unslash( $_POST['same'] ?? '' ) );
             $settings['search_types']    = array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['types'] ?? [] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+            update_option( 'woobt_settings', $settings );
+            wp_die();
+        }
+
+        function ajax_update_multiple_rules() {
+            if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'woobt-security' ) || ! current_user_can( 'manage_options' ) ) {
+                die( 'Permissions check failed!' );
+            }
+
+            // Only update the single key to avoid overwriting other settings
+            $settings                   = (array) get_option( 'woobt_settings', [] );
+            $settings['multiple_rules'] = sanitize_text_field( wp_unslash( $_POST['multiple_rules'] ?? 'no' ) );
 
             update_option( 'woobt_settings', $settings );
             wp_die();
