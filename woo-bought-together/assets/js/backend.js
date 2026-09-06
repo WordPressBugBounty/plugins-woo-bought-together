@@ -172,6 +172,10 @@
     });
 
     // set optional
+    $(document).on('change', '#woobt_quantity', function () {
+        woobt_custom_qty();
+    });
+
     $(document).on('click touch', '#woobt_custom_qty', function () {
         woobt_custom_qty();
     });
@@ -247,7 +251,13 @@
     }
 
     function woobt_custom_qty() {
-        if ($('#woobt_custom_qty').is(':checked')) {
+        if ($('#woobt_quantity').length) {
+            if ($('#woobt_quantity').val() === 'custom') {
+                $('.woobt_tr_show_if_custom_qty').show();
+            } else {
+                $('.woobt_tr_show_if_custom_qty').hide();
+            }
+        } else if ($('#woobt_custom_qty').is(':checked')) {
             $('.woobt_tr_show_if_custom_qty').show();
             $('.woobt_tr_hide_if_custom_qty').hide();
             $('#woobt_sync_qty').prop('checked', false);
@@ -263,14 +273,7 @@
         $('#woobt_loading').hide();
 
         // show or hide limit
-        if ($('#woobt_custom_qty').is(':checked')) {
-            $('.woobt_tr_show_if_custom_qty').show();
-            $('.woobt_tr_hide_if_custom_qty').hide();
-            $('#woobt_sync_qty').prop('checked', false);
-        } else {
-            $('.woobt_tr_show_if_custom_qty').hide();
-            $('.woobt_tr_hide_if_custom_qty').show();
-        }
+        woobt_custom_qty();
     }
 
     function woobt_options() {
@@ -372,6 +375,17 @@
             $(this).closest('.woobt_rule').find('.woobt_rule_name').html(name.replace(/(<([^>]+)>)/ig, ''));
         } else {
             $(this).closest('.woobt_rule').find('.woobt_rule_name').html('#' + key);
+        }
+    });
+
+    $(document).on('change', '.woobt_rule_quantity', function () {
+        var $this = $(this);
+        var $rule = $this.closest('.woobt_rule');
+
+        if ($this.val() === 'custom') {
+            $rule.find('.woobt_tr_limit').removeClass('woobt_hide');
+        } else {
+            $rule.find('.woobt_tr_limit').addClass('woobt_hide');
         }
     });
 

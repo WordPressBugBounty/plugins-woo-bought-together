@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 7.8.7\n"
+"Project-Id-Version: WPC Frequently Bought Together for WooCommerce 8.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woo-bought-together\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-28T04:54:54+00:00\n"
+"POT-Creation-Date: 2026-09-06T03:59:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: woo-bought-together\n"
@@ -45,7 +45,7 @@ msgid "WPC Frequently Bought Together"
 msgstr ""
 
 #: includes/class-backend.php:82
-#: includes/class-backend.php:1656
+#: includes/class-backend.php:1714
 msgid "Bought Together"
 msgstr ""
 
@@ -76,7 +76,7 @@ msgid "Settings updated."
 msgstr ""
 
 #: includes/class-backend.php:122
-#: includes/class-backend.php:1404
+#: includes/class-backend.php:1462
 msgid "Settings"
 msgstr ""
 
@@ -89,7 +89,7 @@ msgid "Localization"
 msgstr ""
 
 #: includes/class-backend.php:135
-#: includes/class-backend.php:1405
+#: includes/class-backend.php:1463
 msgid "Premium Version"
 msgstr ""
 
@@ -134,13 +134,13 @@ msgstr ""
 #: includes/class-backend.php:476
 #: includes/class-backend.php:502
 #: includes/class-backend.php:517
-#: includes/class-backend.php:952
-#: includes/class-backend.php:1307
-#: includes/class-backend.php:1316
-#: includes/class-backend.php:1326
-#: includes/class-backend.php:1336
-#: includes/class-backend.php:1346
-#: includes/class-backend.php:1911
+#: includes/class-backend.php:962
+#: includes/class-backend.php:1365
+#: includes/class-backend.php:1374
+#: includes/class-backend.php:1384
+#: includes/class-backend.php:1394
+#: includes/class-backend.php:1404
+#: includes/class-backend.php:1975
 msgid "No"
 msgstr ""
 
@@ -185,112 +185,112 @@ msgid "Cross-sells products"
 msgstr ""
 
 #: includes/class-backend.php:268
-#: includes/class-backend.php:1047
+#: includes/class-backend.php:1105
 msgid "Limit"
 msgstr ""
 
 #: includes/class-backend.php:278
-#: includes/class-backend.php:980
+#: includes/class-backend.php:990
 msgid "New price"
 msgstr ""
 
 #: includes/class-backend.php:285
-#: includes/class-backend.php:987
+#: includes/class-backend.php:997
 msgid "Set a new price for each product using a number (eg. \"49\") or percentage (eg. \"90%\" of original price)."
 msgstr ""
 
 #: includes/class-backend.php:289
-#: includes/class-backend.php:991
-#: includes/class-backend.php:1791
+#: includes/class-backend.php:1001
+#: includes/class-backend.php:1860
 msgid "Discount"
 msgstr ""
 
 #: includes/class-backend.php:296
-#: includes/class-backend.php:998
-#: includes/class-backend.php:1798
+#: includes/class-backend.php:1008
+#: includes/class-backend.php:1867
 msgid "Discount for the main product when buying at least one product in this list."
 msgstr ""
 
 #: includes/class-backend.php:303
-#: includes/class-backend.php:1860
+#: includes/class-backend.php:1924
 msgid "Layout"
 msgstr ""
 
 #: includes/class-backend.php:306
-#: includes/class-backend.php:1864
+#: includes/class-backend.php:1928
 msgid "List"
 msgstr ""
 
 #: includes/class-backend.php:307
-#: includes/class-backend.php:1865
+#: includes/class-backend.php:1929
 msgid "Compact"
 msgstr ""
 
 #: includes/class-backend.php:308
-#: includes/class-backend.php:1866
+#: includes/class-backend.php:1930
 msgid "Separate images"
 msgstr ""
 
 #: includes/class-backend.php:309
 #: includes/class-backend.php:433
-#: includes/class-backend.php:1867
+#: includes/class-backend.php:1931
 msgid "Grid - 2 columns"
 msgstr ""
 
 #: includes/class-backend.php:310
 #: includes/class-backend.php:434
-#: includes/class-backend.php:1868
+#: includes/class-backend.php:1932
 msgid "Grid - 3 columns"
 msgstr ""
 
 #: includes/class-backend.php:311
 #: includes/class-backend.php:435
-#: includes/class-backend.php:1869
+#: includes/class-backend.php:1933
 msgid "Grid - 4 columns"
 msgstr ""
 
 #: includes/class-backend.php:312
-#: includes/class-backend.php:1870
+#: includes/class-backend.php:1934
 msgid "Carousel - 2 columns"
 msgstr ""
 
 #: includes/class-backend.php:313
-#: includes/class-backend.php:1871
+#: includes/class-backend.php:1935
 msgid "Carousel - 3 columns"
 msgstr ""
 
 #: includes/class-backend.php:314
-#: includes/class-backend.php:1872
+#: includes/class-backend.php:1936
 msgid "Carousel - 4 columns"
 msgstr ""
 
 #: includes/class-backend.php:319
-#: includes/class-backend.php:1877
+#: includes/class-backend.php:1941
 msgid "Position"
 msgstr ""
 
 #: includes/class-backend.php:334
-#: includes/class-backend.php:1892
+#: includes/class-backend.php:1956
 msgid "Choose the position to show the products list. You also can use the shortcode [woobt] to show the list where you want."
 msgstr ""
 
 #: includes/class-backend.php:338
-#: includes/class-backend.php:1896
+#: includes/class-backend.php:1960
 msgid "Add to cart button"
 msgstr ""
 
 #: includes/class-backend.php:342
-#: includes/class-backend.php:1900
+#: includes/class-backend.php:1964
 msgid "Main product's button"
 msgstr ""
 
 #: includes/class-backend.php:343
-#: includes/class-backend.php:1901
+#: includes/class-backend.php:1965
 msgid "Separate buttons"
 msgstr ""
 
 #: includes/class-backend.php:348
-#: includes/class-backend.php:1906
+#: includes/class-backend.php:1970
 msgid "Show \"this item\""
 msgstr ""
 
@@ -303,18 +303,18 @@ msgstr ""
 #: includes/class-backend.php:474
 #: includes/class-backend.php:501
 #: includes/class-backend.php:516
-#: includes/class-backend.php:951
-#: includes/class-backend.php:1306
-#: includes/class-backend.php:1315
-#: includes/class-backend.php:1325
-#: includes/class-backend.php:1335
-#: includes/class-backend.php:1345
-#: includes/class-backend.php:1910
+#: includes/class-backend.php:961
+#: includes/class-backend.php:1364
+#: includes/class-backend.php:1373
+#: includes/class-backend.php:1383
+#: includes/class-backend.php:1393
+#: includes/class-backend.php:1403
+#: includes/class-backend.php:1974
 msgid "Yes"
 msgstr ""
 
 #: includes/class-backend.php:356
-#: includes/class-backend.php:1913
+#: includes/class-backend.php:1977
 msgid "\"This item\" cannot be hidden if \"Separate buttons\" is in use for the Add to Cart button."
 msgstr ""
 
@@ -335,7 +335,7 @@ msgid "Show price"
 msgstr ""
 
 #: includes/class-backend.php:382
-#: includes/class-backend.php:1060
+#: includes/class-backend.php:1118
 msgid "Price"
 msgstr ""
 
@@ -360,8 +360,10 @@ msgid "Variations selector"
 msgstr ""
 
 #: includes/class-backend.php:413
-#: includes/class-backend.php:1054
-#: includes/class-backend.php:1068
+#: includes/class-backend.php:1028
+#: includes/class-backend.php:1112
+#: includes/class-backend.php:1126
+#: includes/class-backend.php:1892
 msgid "Default"
 msgstr ""
 
@@ -474,7 +476,7 @@ msgid "Buyer can change the quantity of associated products or not?"
 msgstr ""
 
 #: includes/class-backend.php:524
-#: includes/class-backend.php:1718
+#: includes/class-backend.php:1787
 msgid "Search"
 msgstr ""
 
@@ -569,7 +571,7 @@ msgstr ""
 
 #. translators: product name
 #: includes/class-backend.php:654
-#: includes/class-backend.php:1464
+#: includes/class-backend.php:1522
 #: includes/class-blocks.php:139
 #: includes/class-woobt.php:276
 #, php-format
@@ -664,375 +666,401 @@ msgstr ""
 msgid "Collapse All"
 msgstr ""
 
-#: includes/class-backend.php:941
+#: includes/class-backend.php:951
 msgid "duplicate"
 msgstr ""
 
-#: includes/class-backend.php:943
+#: includes/class-backend.php:953
 msgid "remove"
 msgstr ""
 
-#: includes/class-backend.php:947
+#: includes/class-backend.php:957
 msgid "Active"
 msgstr ""
 
-#: includes/class-backend.php:957
-#: includes/class-backend.php:1057
+#: includes/class-backend.php:967
+#: includes/class-backend.php:1115
 msgid "Name"
 msgstr ""
 
-#: includes/class-backend.php:964
+#: includes/class-backend.php:974
 msgid "For management only."
 msgstr ""
 
-#: includes/class-backend.php:969
+#: includes/class-backend.php:979
 msgid "Add FBT products to which?"
 msgstr ""
 
-#: includes/class-backend.php:975
+#: includes/class-backend.php:985
 msgid "Define applicable FBT products:"
 msgstr ""
 
-#: includes/class-backend.php:1002
-#: includes/class-backend.php:1917
+#: includes/class-backend.php:1012
+#: includes/class-backend.php:1690
+msgid "Default quantity"
+msgstr ""
+
+#: includes/class-backend.php:1019
+msgid "Default quantity for each product."
+msgstr ""
+
+#: includes/class-backend.php:1023
+#: includes/class-backend.php:1888
+msgid "Item quantity"
+msgstr ""
+
+#: includes/class-backend.php:1029
+#: includes/class-backend.php:1893
+msgid "Custom"
+msgstr ""
+
+#: includes/class-backend.php:1030
+#: includes/class-backend.php:1894
+msgid "Sync"
+msgstr ""
+
+#: includes/class-backend.php:1033
+msgid "Default: use default quantity; Custom: allow buyer to change quantity; Sync: sync with main product quantity multiplied by default quantity."
+msgstr ""
+
+#: includes/class-backend.php:1037
+#: includes/class-backend.php:1901
+msgid "Limit each item"
+msgstr ""
+
+#: includes/class-backend.php:1042
+#: includes/class-backend.php:1905
+msgid "Use default quantity as min"
+msgstr ""
+
+#: includes/class-backend.php:1044
+msgid "or"
+msgstr ""
+
+#: includes/class-backend.php:1045
+msgid "Min"
+msgstr ""
+
+#: includes/class-backend.php:1051
+msgid "Max"
+msgstr ""
+
+#: includes/class-backend.php:1060
+#: includes/class-backend.php:1981
 msgid "Above text"
 msgstr ""
 
-#: includes/class-backend.php:1011
-#: includes/class-backend.php:1928
+#: includes/class-backend.php:1069
+#: includes/class-backend.php:1992
 msgid "Under text"
 msgstr ""
 
-#: includes/class-backend.php:1028
+#: includes/class-backend.php:1086
 msgid "Source"
 msgstr ""
 
-#: includes/class-backend.php:1034
+#: includes/class-backend.php:1092
 msgid "All products"
 msgstr ""
 
-#: includes/class-backend.php:1035
+#: includes/class-backend.php:1093
 msgid "Selected products"
 msgstr ""
 
-#: includes/class-backend.php:1036
-#: includes/class-backend.php:1099
+#: includes/class-backend.php:1094
+#: includes/class-backend.php:1157
 msgid "Combined"
 msgstr ""
 
-#: includes/class-backend.php:1052
+#: includes/class-backend.php:1110
 msgid "Order by"
 msgstr ""
 
-#: includes/class-backend.php:1055
+#: includes/class-backend.php:1113
 msgid "None"
 msgstr ""
 
-#: includes/class-backend.php:1056
+#: includes/class-backend.php:1114
 msgid "ID"
 msgstr ""
 
-#: includes/class-backend.php:1058
+#: includes/class-backend.php:1116
 msgid "Type"
 msgstr ""
 
-#: includes/class-backend.php:1059
+#: includes/class-backend.php:1117
 msgid "Date"
 msgstr ""
 
-#: includes/class-backend.php:1061
+#: includes/class-backend.php:1119
 msgid "Modified"
 msgstr ""
 
-#: includes/class-backend.php:1062
+#: includes/class-backend.php:1120
 msgid "Random"
 msgstr ""
 
-#: includes/class-backend.php:1066
+#: includes/class-backend.php:1124
 msgid "Order"
 msgstr ""
 
-#: includes/class-backend.php:1069
+#: includes/class-backend.php:1127
 msgid "DESC"
 msgstr ""
 
-#: includes/class-backend.php:1070
+#: includes/class-backend.php:1128
 msgid "ASC"
 msgstr ""
 
-#: includes/class-backend.php:1078
+#: includes/class-backend.php:1136
 msgid "Products"
 msgstr ""
 
-#: includes/class-backend.php:1084
+#: includes/class-backend.php:1142
 msgid "Search for a product&hellip;"
 msgstr ""
 
-#: includes/class-backend.php:1102
+#: includes/class-backend.php:1160
 msgid "* Configure to find products that match all listed conditions."
 msgstr ""
 
-#: includes/class-backend.php:1115
+#: includes/class-backend.php:1173
 msgid "+ Add condition"
 msgstr ""
 
-#: includes/class-backend.php:1120
+#: includes/class-backend.php:1178
 msgid "Terms"
 msgstr ""
 
-#: includes/class-backend.php:1161
+#: includes/class-backend.php:1219
 msgid "Variations only"
 msgstr ""
 
-#: includes/class-backend.php:1162
+#: includes/class-backend.php:1220
 msgid "Non-variation products"
 msgstr ""
 
-#: includes/class-backend.php:1164
+#: includes/class-backend.php:1222
 msgid "Has same"
 msgstr ""
 
-#: includes/class-backend.php:1178
+#: includes/class-backend.php:1236
 msgid "including"
 msgstr ""
 
-#: includes/class-backend.php:1179
+#: includes/class-backend.php:1237
 msgid "excluding"
 msgstr ""
 
-#: includes/class-backend.php:1294
+#: includes/class-backend.php:1352
 msgid "Search limit"
 msgstr ""
 
-#: includes/class-backend.php:1303
+#: includes/class-backend.php:1361
 msgid "Search by SKU"
 msgstr ""
 
-#: includes/class-backend.php:1312
+#: includes/class-backend.php:1370
 msgid "Search by ID"
 msgstr ""
 
-#: includes/class-backend.php:1318
+#: includes/class-backend.php:1376
 msgid "Search by ID when entering the numeric only."
 msgstr ""
 
-#: includes/class-backend.php:1322
+#: includes/class-backend.php:1380
 msgid "Search exact"
 msgstr ""
 
-#: includes/class-backend.php:1328
+#: includes/class-backend.php:1386
 msgid "Match whole product title or content?"
 msgstr ""
 
-#: includes/class-backend.php:1332
+#: includes/class-backend.php:1390
 msgid "Search sentence"
 msgstr ""
 
-#: includes/class-backend.php:1338
+#: includes/class-backend.php:1396
 msgid "Do a phrase search?"
 msgstr ""
 
-#: includes/class-backend.php:1342
+#: includes/class-backend.php:1400
 msgid "Accept same products"
 msgstr ""
 
-#: includes/class-backend.php:1348
+#: includes/class-backend.php:1406
 msgid "If yes, a product can be added many times."
 msgstr ""
 
-#: includes/class-backend.php:1352
+#: includes/class-backend.php:1410
 msgid "Product types"
 msgstr ""
 
-#: includes/class-backend.php:1357
+#: includes/class-backend.php:1415
 msgid "All"
 msgstr ""
 
-#: includes/class-backend.php:1363
+#: includes/class-backend.php:1421
 msgid " → Variation"
 msgstr ""
 
-#: includes/class-backend.php:1421
+#: includes/class-backend.php:1479
 msgid "Community support"
 msgstr ""
 
-#: includes/class-backend.php:1433
+#: includes/class-backend.php:1491
 msgid "Bought together (Disabled)"
 msgstr ""
 
 #. translators: count
-#: includes/class-backend.php:1445
+#: includes/class-backend.php:1503
 #, php-format
 msgid "Bought together (%d)"
 msgstr ""
 
 #. translators: keyword
-#: includes/class-backend.php:1590
+#: includes/class-backend.php:1648
 #, php-format
 msgid "No results found for \"%s\""
 msgstr ""
 
-#: includes/class-backend.php:1625
+#: includes/class-backend.php:1683
 msgid "Add"
 msgstr ""
 
 #. translators: product ID
-#: includes/class-backend.php:1627
-#: includes/class-backend.php:1640
-#: includes/class-backend.php:1651
+#: includes/class-backend.php:1685
+#: includes/class-backend.php:1698
+#: includes/class-backend.php:1709
 msgid "Remove"
 msgstr ""
 
-#: includes/class-backend.php:1632
+#: includes/class-backend.php:1690
 msgid "Set a new price using a number (eg. \"49\") or percentage (eg. \"90%\" of original price)"
 msgstr ""
 
-#: includes/class-backend.php:1632
-msgid "Default quantity"
-msgstr ""
-
 #. translators: product ID
-#: includes/class-backend.php:1640
+#: includes/class-backend.php:1698
 #, php-format
 msgid "Product ID %d does not exist."
 msgstr ""
 
-#: includes/class-backend.php:1679
+#: includes/class-backend.php:1737
 msgid "Product wasn't returned."
 msgstr ""
 
-#: includes/class-backend.php:1694
+#: includes/class-backend.php:1763
 msgid "Search settings"
 msgstr ""
 
-#: includes/class-backend.php:1701
+#: includes/class-backend.php:1770
 msgid "Update Options"
 msgstr ""
 
-#: includes/class-backend.php:1709
+#: includes/class-backend.php:1778
 msgid "Disable"
 msgstr ""
 
-#: includes/class-backend.php:1720
+#: includes/class-backend.php:1789
 msgid "settings"
 msgstr ""
 
-#: includes/class-backend.php:1725
+#: includes/class-backend.php:1794
 msgid "searching..."
 msgstr ""
 
-#: includes/class-backend.php:1727
+#: includes/class-backend.php:1796
 msgid "Type any keyword to search"
 msgstr ""
 
-#: includes/class-backend.php:1734
+#: includes/class-backend.php:1803
 msgid "Selected"
 msgstr ""
 
-#: includes/class-backend.php:1737
+#: includes/class-backend.php:1806
 msgid "import/export"
 msgstr ""
 
 #. translators: links
-#: includes/class-backend.php:1742
+#: includes/class-backend.php:1811
 #, php-format
 msgid "* If don't choose any products, it can shows products from Smart Rules %1$s or Default %2$s."
 msgstr ""
 
 #. translators: links
-#: includes/class-backend.php:1743
-#: includes/class-backend.php:1744
+#: includes/class-backend.php:1812
+#: includes/class-backend.php:1813
 msgid "here"
 msgstr ""
 
-#: includes/class-backend.php:1776
+#: includes/class-backend.php:1845
 msgid "+ Add heading/paragraph"
 msgstr ""
 
-#: includes/class-backend.php:1781
+#: includes/class-backend.php:1850
 msgid "Add separately"
 msgstr ""
 
-#: includes/class-backend.php:1787
+#: includes/class-backend.php:1856
 msgid "If enabled, the associated products will be added as separate items and stay unaffected from the main product, their prices will change back to the original."
 msgstr ""
 
-#: includes/class-backend.php:1802
+#: includes/class-backend.php:1871
 msgid "Selecting method"
 msgstr ""
 
-#: includes/class-backend.php:1805
+#: includes/class-backend.php:1874
 msgid "Multiple selection (default)"
 msgstr ""
 
-#: includes/class-backend.php:1806
+#: includes/class-backend.php:1875
 msgid "Single selection (choose 1 only)"
 msgstr ""
 
-#: includes/class-backend.php:1811
+#: includes/class-backend.php:1880
 msgid "Checked all"
 msgstr ""
 
-#: includes/class-backend.php:1815
+#: includes/class-backend.php:1884
 msgid "Checked all by default."
 msgstr ""
 
-#: includes/class-backend.php:1819
-msgid "Custom quantity"
+#: includes/class-backend.php:1897
+msgid "Default: use default quantity; Custom: allow buyer to change quantity; Sync: sync with main product quantity."
 msgstr ""
 
-#: includes/class-backend.php:1823
-msgid "Allow the customer can change the quantity of each product."
-msgstr ""
-
-#: includes/class-backend.php:1827
-msgid "Sync quantity"
-msgstr ""
-
-#: includes/class-backend.php:1831
-msgid "Sync the quantity of the main product with associated products."
-msgstr ""
-
-#: includes/class-backend.php:1835
-msgid "Limit each item"
-msgstr ""
-
-#: includes/class-backend.php:1839
-msgid "Use default quantity as min"
-msgstr ""
-
-#: includes/class-backend.php:1853
+#: includes/class-backend.php:1917
 msgid "Displaying"
 msgstr ""
 
-#: includes/class-backend.php:1856
+#: includes/class-backend.php:1920
 msgid "Overwrite the default displaying settings"
 msgstr ""
 
-#: includes/class-backend.php:1863
-#: includes/class-backend.php:1883
-#: includes/class-backend.php:1899
-#: includes/class-backend.php:1909
+#: includes/class-backend.php:1927
+#: includes/class-backend.php:1947
+#: includes/class-backend.php:1963
+#: includes/class-backend.php:1973
 msgid "Unset (default setting)"
 msgstr ""
 
-#: includes/class-backend.php:2048
+#: includes/class-backend.php:2114
 msgid "Update"
 msgstr ""
 
-#: includes/class-backend.php:2049
+#: includes/class-backend.php:2115
 msgid "* All selected products will be replaced after pressing Update!"
 msgstr ""
 
-#: includes/class-backend.php:2096
+#: includes/class-backend.php:2162
 msgid "Bought together"
 msgstr ""
 
-#: includes/class-backend.php:2097
+#: includes/class-backend.php:2163
 msgid "With associated products"
 msgstr ""
 
-#: includes/class-backend.php:2098
+#: includes/class-backend.php:2164
 msgid "Without associated products"
 msgstr ""
 

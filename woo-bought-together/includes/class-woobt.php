@@ -418,7 +418,7 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                         return false;
                     }
 
-                    if ( apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id ) ) {
+                    if ( apply_filters( 'woobt_custom_qty', self::get_product_quantity( $product_id, 'validate' ) === 'custom', $product_id ) ) {
                         // custom qty
                         if ( ( $limit_min = apply_filters( 'woobt_limit_each_min', get_post_meta( $product_id, 'woobt_limit_each_min', true ), $validate_item, $product_id ) ) && ( $validate_item['qty'] < (float) $limit_min ) ) {
                             wc_add_notice( sprintf( /* translators: product name */ esc_html__( '"%s" does not reach the minimum quantity.', 'woo-bought-together' ), esc_html( apply_filters( 'woobt_product_get_name', $item_product->get_name(), $item_product ) ) ), 'error' );
@@ -478,11 +478,11 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                 $ids = $cart_item_data['woobt_ids'];
 
                 if ( $add_items = self::get_items_from_ids( $ids, $product_id ) ) {
-                    $custom_qty  = apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id );
+                    $custom_qty  = apply_filters( 'woobt_custom_qty', self::get_product_quantity( $product_id, 'add-to-cart' ) === 'custom', $product_id );
                     $separately  = apply_filters( 'woobt_separately', get_post_meta( $product_id, 'woobt_separately', true ) === 'on', $product_id );
                     $reset_price = apply_filters( 'woobt_separately_reset_price', true, $product_id, 'add-to-cart' );
                     $ignore_this = apply_filters( 'woobt_separately_ignore_this_item', false, $product_id );
-                    $sync_qty    = ! $custom_qty && apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' );
+                    $sync_qty    = ! $custom_qty && apply_filters( 'woobt_sync_qty', self::get_product_quantity( $product_id, 'add-to-cart' ) === 'sync' );
 
                     if ( ! $separately ) {
                         // add sync_qty for the main product
@@ -513,10 +513,10 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
         function add_to_cart_items( $items, $cart_item_key, $product_id, $quantity ) {
             $pricing       = WPCleverWoobt_Helper()->get_setting( 'pricing', 'sale_price' );
             $ignore_onsale = WPCleverWoobt_Helper()->get_setting( 'ignore_onsale', 'no' );
-            $custom_qty    = apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id );
+            $custom_qty    = apply_filters( 'woobt_custom_qty', self::get_product_quantity( $product_id, 'add-to-cart' ) === 'custom', $product_id );
             $separately    = apply_filters( 'woobt_separately', get_post_meta( $product_id, 'woobt_separately', true ) === 'on', $product_id );
             $reset_price   = apply_filters( 'woobt_separately_reset_price', true, $product_id, 'add-to-cart' );
-            $sync_qty      = ! $custom_qty && apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' );
+            $sync_qty      = ! $custom_qty && apply_filters( 'woobt_sync_qty', self::get_product_quantity( $product_id, 'add-to-cart' ) === 'sync' );
 
             // add child products
             foreach ( $items as $item ) {
@@ -795,8 +795,8 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                     unset( $cart->cart_contents[ $cart_item_key ]['woobt_order_again'] );
 
                     $product_id = $cart_item['product_id'];
-                    $custom_qty = apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id );
-                    $sync_qty   = ! $custom_qty && apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' );
+                    $custom_qty = apply_filters( 'woobt_custom_qty', self::get_product_quantity( $product_id, 'add-to-cart' ) === 'custom', $product_id );
+                    $sync_qty   = ! $custom_qty && apply_filters( 'woobt_sync_qty', self::get_product_quantity( $product_id, 'add-to-cart' ) === 'sync' );
 
                     $cart->cart_contents[ $cart_item_key ]['woobt_key']      = $cart_item_key;
                     $cart->cart_contents[ $cart_item_key ]['woobt_sync_qty'] = $sync_qty;
@@ -965,8 +965,8 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
                 wp_enqueue_script( 'wc-add-to-cart-variation' );
             }
 
-            $custom_qty  = apply_filters( 'woobt_custom_qty', get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on', $product_id );
-            $sync_qty    = apply_filters( 'woobt_sync_qty', get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on', $product_id );
+            $custom_qty  = apply_filters( 'woobt_custom_qty', self::get_product_quantity( $product_id, 'view' ) === 'custom', $product_id );
+            $sync_qty    = ! $custom_qty && apply_filters( 'woobt_sync_qty', self::get_product_quantity( $product_id, 'view' ) === 'sync', $product_id );
             $checked_all = apply_filters( 'woobt_checked_all', get_post_meta( $product_id, 'woobt_checked_all', true ) === 'on', $product_id );
             $separately  = apply_filters( 'woobt_separately', get_post_meta( $product_id, 'woobt_separately', true ) === 'on', $product_id );
             $separately  &= apply_filters( 'woobt_separately_reset_price', true, $product_id, 'view' ); // change it to false if you want to keep the discounted price
@@ -2081,6 +2081,34 @@ if ( ! class_exists( 'WPCleverWoobt' ) && class_exists( 'WC_Product' ) ) {
             }
 
             return apply_filters( 'woobt_is_disable', $disable, $product, $context );
+        }
+
+        function get_product_quantity( $product, $context = 'view' ) {
+            $quantity = 'default';
+
+            if ( is_a( $product, 'WC_Product' ) ) {
+                $product_id = $product->get_id();
+            } elseif ( is_int( $product ) ) {
+                $product_id = $product;
+            } else {
+                $product_id = 0;
+            }
+
+            if ( $product_id ) {
+                $quantity = get_post_meta( $product_id, 'woobt_quantity', true );
+
+                if ( empty( $quantity ) ) {
+                    if ( get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on' ) {
+                        $quantity = 'custom';
+                    } elseif ( get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' ) {
+                        $quantity = 'sync';
+                    } else {
+                        $quantity = 'default';
+                    }
+                }
+            }
+
+            return apply_filters( 'woobt_product_quantity', $quantity, $product, $context );
         }
 
         function get_discount( $product_id ) {

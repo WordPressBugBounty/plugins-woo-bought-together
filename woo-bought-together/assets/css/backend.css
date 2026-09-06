@@ -1011,3 +1011,9 @@ table.wp-list-table span.product-type.woobt:before {
 .hide_apply, .hide_get {
     display: none;
 }
+
+.woobt_table .woobt_limit_each_input,
+.woobt_rules .woobt_limit_each_input {
+    width: 60px !important;
+    float: none !important;
+}

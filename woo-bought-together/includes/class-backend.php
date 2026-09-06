@@ -922,12 +922,22 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             $get_limit         = absint( $rule['get_limit'] ?? 3 );
             $get_orderby       = $rule['get_orderby'] ?? 'default';
             $get_order         = $rule['get_order'] ?? 'default';
-            $price             = $rule['price'] ?? '100%';
-            $discount          = $rule['discount'] ?? '0';
-            $before_text       = $rule['before_text'] ?? '';
-            $after_text        = $rule['after_text'] ?? '';
-            $input_name        = $name . '[' . $key . ']';
-            $rule_class        = 'woobt_rule' . ( $open ? ' open' : '' ) . ( $active === 'yes' ? ' active' : '' );
+            $price                  = $rule['price'] ?? '100%';
+            $discount               = $rule['discount'] ?? '0';
+            $before_text            = $rule['before_text'] ?? '';
+            $after_text             = $rule['after_text'] ?? '';
+            $default_qty            = ! empty( $rule['default_qty'] ) ? (float) $rule['default_qty'] : ( ! empty( $rule['default_quantity'] ) ? (float) $rule['default_quantity'] : 1 );
+
+            if ( $default_qty <= 0 ) {
+                $default_qty = 1;
+            }
+
+            $quantity               = $rule['quantity'] ?? ( $rule['qty_mode'] ?? 'default' );
+            $limit_each_min_default = $rule['limit_each_min_default'] ?? 'no';
+            $limit_each_min         = $rule['limit_each_min'] ?? '';
+            $limit_each_max         = $rule['limit_each_max'] ?? '';
+            $input_name             = $name . '[' . $key . ']';
+            $rule_class             = 'woobt_rule' . ( $open ? ' open' : '' ) . ( $active === 'yes' ? ' active' : '' );
             ?>
             <div class="<?php echo esc_attr( $rule_class ); ?>" data-key="<?php echo esc_attr( $key ); ?>">
                 <input type="hidden" name="<?php echo esc_attr( $input_name . '[key]' ); ?>"
@@ -996,6 +1006,54 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                                        value="<?php echo esc_attr( $discount ); ?>"/>
                             </label>%.
                             <span class="description"><?php esc_html_e( 'Discount for the main product when buying at least one product in this list.', 'woo-bought-together' ); ?></span>
+                        </div>
+                    </div>
+                    <div class="woobt_tr">
+                        <div class="woobt_th"><?php esc_html_e( 'Default quantity', 'woo-bought-together' ); ?></div>
+                        <div class="woobt_td woobt_rule_td">
+                            <label>
+                                <input type="number" class="small-text" min="1" step="1"
+                                       name="<?php echo esc_attr( $input_name . '[default_qty]' ); ?>"
+                                       value="<?php echo esc_attr( $default_qty ); ?>"/>
+                            </label>
+                            <span class="description"><?php esc_html_e( 'Default quantity for each product.', 'woo-bought-together' ); ?></span>
+                        </div>
+                    </div>
+                    <div class="woobt_tr">
+                        <div class="woobt_th"><?php esc_html_e( 'Item quantity', 'woo-bought-together' ); ?></div>
+                        <div class="woobt_td woobt_rule_td">
+                            <label>
+                                <select name="<?php echo esc_attr( $input_name . '[quantity]' ); ?>"
+                                        class="woobt_rule_quantity">
+                                    <option value="default" <?php selected( $quantity, 'default' ); ?>><?php esc_html_e( 'Default', 'woo-bought-together' ); ?></option>
+                                    <option value="custom" <?php selected( $quantity, 'custom' ); ?>><?php esc_html_e( 'Custom', 'woo-bought-together' ); ?></option>
+                                    <option value="sync" <?php selected( $quantity, 'sync' ); ?>><?php esc_html_e( 'Sync', 'woo-bought-together' ); ?></option>
+                                </select>
+                            </label>
+                            <span class="description"><?php esc_html_e( 'Default: use default quantity; Custom: allow buyer to change quantity; Sync: sync with main product quantity multiplied by default quantity.', 'woo-bought-together' ); ?></span>
+                        </div>
+                    </div>
+                    <div class="woobt_tr woobt_tr_limit <?php echo esc_attr( $quantity !== 'custom' ? 'woobt_hide' : '' ); ?>">
+                        <div class="woobt_th"><?php esc_html_e( 'Limit each item', 'woo-bought-together' ); ?></div>
+                        <div class="woobt_td woobt_rule_td">
+                            <label>
+                                <input name="<?php echo esc_attr( $input_name . '[limit_each_min_default]' ); ?>"
+                                       type="checkbox" value="yes" <?php echo esc_attr( $limit_each_min_default === 'yes' ? 'checked' : '' ); ?>/>
+                                <?php esc_html_e( 'Use default quantity as min', 'woo-bought-together' ); ?>
+                            </label>
+                            <u><?php esc_html_e( 'or', 'woo-bought-together' ); ?></u>
+                            <?php esc_html_e( 'Min', 'woo-bought-together' ); ?>
+                            <label>
+                                <input name="<?php echo esc_attr( $input_name . '[limit_each_min]' ); ?>"
+                                       type="number" min="0" class="small-text woobt_limit_each_input"
+                                       value="<?php echo esc_attr( $limit_each_min ); ?>"/>
+                            </label>
+                            <?php esc_html_e( 'Max', 'woo-bought-together' ); ?>
+                            <label>
+                                <input name="<?php echo esc_attr( $input_name . '[limit_each_max]' ); ?>"
+                                       type="number" min="1" class="small-text woobt_limit_each_input"
+                                       value="<?php echo esc_attr( $limit_each_max ); ?>"/>
+                            </label>
                         </div>
                     </div>
                     <div class="woobt_tr">
@@ -1688,6 +1746,17 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
             $position       = get_post_meta( $product_id, 'woobt_position', true ) ?: 'unset';
             $atc_button     = get_post_meta( $product_id, 'woobt_atc_button', true ) ?: 'unset';
             $show_this_item = get_post_meta( $product_id, 'woobt_show_this_item', true ) ?: 'unset';
+            $quantity       = get_post_meta( $product_id, 'woobt_quantity', true );
+
+            if ( empty( $quantity ) ) {
+                if ( get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on' ) {
+                    $quantity = 'custom';
+                } elseif ( get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' ) {
+                    $quantity = 'sync';
+                } else {
+                    $quantity = 'default';
+                }
+            }
             ?>
             <div id='woobt_settings' class='panel woocommerce_options_panel woobt_table'>
                 <div id="woobt_search_settings" style="display: none"
@@ -1816,19 +1885,16 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                         </td>
                     </tr>
                     <tr class="woobt_tr_space">
-                        <th><?php esc_html_e( 'Custom quantity', 'woo-bought-together' ); ?></th>
+                        <th><?php esc_html_e( 'Item quantity', 'woo-bought-together' ); ?></th>
                         <td>
-                            <input id="woobt_custom_qty" name="woobt_custom_qty"
-                                   type="checkbox" <?php echo esc_attr( get_post_meta( $product_id, 'woobt_custom_qty', true ) === 'on' ? 'checked' : '' ); ?>/>
-                            <label for="woobt_custom_qty"><?php esc_html_e( 'Allow the customer can change the quantity of each product.', 'woo-bought-together' ); ?></label>
-                        </td>
-                    </tr>
-                    <tr class="woobt_tr_space woobt_tr_hide_if_custom_qty">
-                        <th><?php esc_html_e( 'Sync quantity', 'woo-bought-together' ); ?></th>
-                        <td>
-                            <input id="woobt_sync_qty" name="woobt_sync_qty"
-                                   type="checkbox" <?php echo esc_attr( get_post_meta( $product_id, 'woobt_sync_qty', true ) === 'on' ? 'checked' : '' ); ?>/>
-                            <label for="woobt_sync_qty"><?php esc_html_e( 'Sync the quantity of the main product with associated products.', 'woo-bought-together' ); ?></label>
+                            <label>
+                                <select id="woobt_quantity" name="woobt_quantity">
+                                    <option value="default" <?php selected( $quantity, 'default' ); ?>><?php esc_html_e( 'Default', 'woo-bought-together' ); ?></option>
+                                    <option value="custom" <?php selected( $quantity, 'custom' ); ?>><?php esc_html_e( 'Custom', 'woo-bought-together' ); ?></option>
+                                    <option value="sync" <?php selected( $quantity, 'sync' ); ?>><?php esc_html_e( 'Sync', 'woo-bought-together' ); ?></option>
+                                </select>
+                            </label>
+                            <span class="description"><?php esc_html_e( 'Default: use default quantity; Custom: allow buyer to change quantity; Sync: sync with main product quantity.', 'woo-bought-together' ); ?></span>
                         </td>
                     </tr>
                     <tr class="woobt_tr_space woobt_tr_show_if_custom_qty">
@@ -1838,13 +1904,11 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                                    type="checkbox" <?php echo esc_attr( get_post_meta( $product_id, 'woobt_limit_each_min_default', true ) === 'on' ? 'checked' : '' ); ?>/>
                             <label for="woobt_limit_each_min_default"><?php esc_html_e( 'Use default quantity as min', 'woo-bought-together' ); ?></label>
                             <u>or</u> Min <label>
-                                <input name="woobt_limit_each_min" type="number" min="0"
-                                       value="<?php echo esc_attr( get_post_meta( $product_id, 'woobt_limit_each_min', true ) ?: '' ); ?>"
-                                       style="width: 60px; float: none"/>
+                                <input name="woobt_limit_each_min" type="number" min="0" class="small-text woobt_limit_each_input"
+                                       value="<?php echo esc_attr( get_post_meta( $product_id, 'woobt_limit_each_min', true ) ?: '' ); ?>"/>
                             </label> Max <label>
-                                <input name="woobt_limit_each_max" type="number" min="1"
-                                       value="<?php echo esc_attr( get_post_meta( $product_id, 'woobt_limit_each_max', true ) ?: '' ); ?>"
-                                       style="width: 60px; float: none"/>
+                                <input name="woobt_limit_each_max" type="number" min="1" class="small-text woobt_limit_each_input"
+                                       value="<?php echo esc_attr( get_post_meta( $product_id, 'woobt_limit_each_max', true ) ?: '' ); ?>"/>
                             </label>
                         </td>
                     </tr>
@@ -1977,16 +2041,18 @@ if ( ! class_exists( 'WPCleverWoobt_Backend' ) ) {
                 update_post_meta( $post_id, 'woobt_selection', sanitize_text_field( wp_unslash( $_POST['woobt_selection'] ?? '' ) ) );
             }
 
-            if ( isset( $_POST['woobt_custom_qty'] ) ) {
+            if ( isset( $_POST['woobt_quantity'] ) ) {
+                $quantity = sanitize_text_field( wp_unslash( $_POST['woobt_quantity'] ) );
+                update_post_meta( $post_id, 'woobt_quantity', $quantity );
+                // Backwards compatibility with previous woobt_custom_qty and woobt_sync_qty meta
+                update_post_meta( $post_id, 'woobt_custom_qty', $quantity === 'custom' ? 'on' : 'off' );
+                update_post_meta( $post_id, 'woobt_sync_qty', $quantity === 'sync' ? 'on' : 'off' );
+            } elseif ( isset( $_POST['woobt_custom_qty'] ) ) {
                 update_post_meta( $post_id, 'woobt_custom_qty', 'on' );
-            } else {
-                update_post_meta( $post_id, 'woobt_custom_qty', 'off' );
-            }
-
-            if ( isset( $_POST['woobt_sync_qty'] ) ) {
+                update_post_meta( $post_id, 'woobt_quantity', 'custom' );
+            } elseif ( isset( $_POST['woobt_sync_qty'] ) ) {
                 update_post_meta( $post_id, 'woobt_sync_qty', 'on' );
-            } else {
-                update_post_meta( $post_id, 'woobt_sync_qty', 'off' );
+                update_post_meta( $post_id, 'woobt_quantity', 'sync' );
             }
 
             if ( isset( $_POST['woobt_limit_each_min_default'] ) ) {
