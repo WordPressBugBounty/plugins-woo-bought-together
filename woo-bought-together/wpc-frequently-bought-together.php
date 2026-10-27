@@ -8,17 +8,17 @@ Author URI: https://wpclever.net
 Text Domain: woo-bought-together
 Domain Path: /languages/
 Requires Plugins: woocommerce
-Version: 8.0.1
+Version: 8.0.2
 Requires at least: 5.9
 WC requires at least: 3.0
-WC tested up to: 11.1
+WC tested up to: 11.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 */
 
 defined( 'ABSPATH' ) || exit;
 
-! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '8.0.1' );
+! defined( 'WOOBT_VERSION' ) && define( 'WOOBT_VERSION', '8.0.2' );
 ! defined( 'WOOBT_LITE' ) && define( 'WOOBT_LITE', __FILE__ );
 ! defined( 'WOOBT_FILE' ) && define( 'WOOBT_FILE', __FILE__ );
 ! defined( 'WOOBT_URI' ) && define( 'WOOBT_URI', plugin_dir_url( __FILE__ ) );
